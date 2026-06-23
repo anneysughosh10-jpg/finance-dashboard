@@ -366,7 +366,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <div class="card">
         <div class="card-header"><span class="card-title">Credit cards</span><span class="badge r" id="cc-util-h">—% utilised</span></div>
         <div class="card-body" id="cc-mini"></div>
-        <div style="padding:10px 18px;border-top:1px solid var(--border2);font-size:11px;color:var(--text3)">Monthly payment: <strong style="color:var(--red)">Rs.14,718</strong></div>
+        <div style="padding:10px 18px;border-top:1px solid var(--border2);font-size:11px;color:var(--text3)">Monthly payment: <strong style="color:var(--red)" id="cc-monthly-pay">Rs.14,718</strong></div>
       </div>
     </div>
   </div>
@@ -432,7 +432,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
     <div class="pg-header"><div><div class="pg-title">Credit cards</div><div class="pg-sub">6 cards · Rs.5,86,944 outstanding · Rs.14,718/month payment</div></div></div>
     <div class="alert warn" style="margin-bottom:16px">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <div>At Rs.14,718/month you're mostly paying interest (~36% p.a.). Priority: clear One Card (Rs.2,62,765) then UNI Card (Rs.1,01,179) first. Use Deloitte variable pay for this.</div>
+      <div id="cc-alert-text">Credit card balances accrue the highest interest of any debt. Clear the largest-balance cards first to reduce interest fastest.</div>
     </div>
     <div class="card" id="cc-full"></div>
     <div style="margin-top:16px"><div class="st">Add credit card</div></div>
@@ -557,7 +557,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
           <div class="fg">
             <div class="fgrp"><label>PAN number</label><input id="prof-pan" value="CQDPA9373B"></div>
             <div class="fgrp"><label>Tax regime</label>
-              <select id="prof-regime">
+              <select id="prof-regime" onchange="P.regime=this.value;renderAll();">
                 <option value="Old Regime" selected>Old Regime</option>
                 <option value="New Regime">New Regime</option>
               </select>
@@ -685,12 +685,43 @@ function getDue(day){
 }
 
 function getSug(){
-  const s=surp(),r=emiRatio();
-  const top=[...S.emis].filter(e=>e.type!=='Home Loan').sort((a,b)=>b.rate-a.rate)[0];
-  if(s<0)return`⚠️ You are in deficit by ${fmt(Math.abs(s))} this month. Ensure all 4 income sources are active. Reduce discretionary expenses immediately.`;
-  if(!top)return'✅ No consumer loans! Focus on building a 3-month emergency fund.';
-  if(s<15000)return`Budget is very tight — only ${fmt(s)} surplus. Use your Deloitte variable pay Rs.1,24,351 to clear Credit Cards (36% interest) + Jupiter Loan (24%) + Gold Loans first. This frees Rs.36,000+ monthly.`;
-  return`You have ${fmt(s)} surplus this month. Best move: close ${top.name} at ${top.rate}% p.a. — outstanding ${fmt(top.outstanding)}. Saves ${fmt(top.amount)}/month permanently. Then target the next highest rate loan.`;
+  // Fully data-driven recommendation engine. Reads live values only.
+  const s=surp(), r=emiRatio(), inc=totInc(), emi=totEMI(), exp=totExp();
+  // Rank consumer (non-home) loans by interest rate, highest first
+  const consumer=[...S.emis].filter(e=>e.type!=='Home Loan').sort((a,b)=>b.rate-a.rate);
+  const top=consumer[0];
+  // Smallest-balance consumer loans (snowball candidates)
+  const small=[...consumer].sort((a,b)=>a.outstanding-b.outstanding).slice(0,2);
+  // Months of surplus needed to clear the smallest loan
+  const months = (top && s>0) ? Math.ceil(small[0].outstanding/s) : 0;
+
+  // ── Case 1: Deficit ──
+  if(s<0){
+    const gap=fmt(Math.abs(s));
+    const biggestExp=[...S.expenses].sort((a,b)=>b.amount-a.amount)[0];
+    return `Your outflow exceeds income by ${gap} this month. The fastest levers are increasing income or trimming your largest discretionary cost (${biggestExp?biggestExp.name+' at '+fmt(biggestExp.amount):'expenses'}). Until the gap closes, avoid taking on any new EMI — it would deepen the shortfall.`;
+  }
+
+  // ── Case 2: No consumer debt left ──
+  if(!top){
+    const ef=Math.round(exp*3);
+    return `You have no high-interest consumer loans left — a strong position. With ${fmt(s)} monthly surplus, prioritise building an emergency fund of about ${fmt(ef)} (three months of expenses), then redirect surplus toward your home-loan principal or long-term investments.`;
+  }
+
+  // ── Case 3: Tight surplus (positive but thin) ──
+  if(s < exp*0.25){  // surplus is less than a quarter of monthly expenses = fragile
+    return `Your surplus of ${fmt(s)} is thin relative to your ${fmt(exp)} in living costs, leaving little buffer. Direct it at ${top.name}, your costliest debt at ${top.rate}% p.a. Clearing its ${fmt(top.outstanding)} balance would free ${fmt(top.amount)} every month — meaningfully easing this tightness. Hold off on new borrowing until then.`;
+  }
+
+  // ── Case 4: Healthy surplus → avalanche guidance with timeline ──
+  let msg = `With ${fmt(s)} surplus this month, the highest-impact move is clearing ${top.name} — your most expensive debt at ${top.rate}% p.a. with ${fmt(top.outstanding)} outstanding. Removing it frees ${fmt(top.amount)} monthly.`;
+  if(consumer[1]){
+    msg += ` After that, shift to ${consumer[1].name} (${consumer[1].rate}% p.a.).`;
+  }
+  if(months>0 && months<=12){
+    msg += ` At your current surplus, the smallest of these — ${small[0].name} — could be cleared in roughly ${months} month${months>1?'s':''}.`;
+  }
+  return msg;
 }
 
 const svgW=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
@@ -788,6 +819,21 @@ function renderAll(){
   // CC mini
   const ccTot=totCC(),ccLim=S.cc.reduce((s,c)=>s+c.limit,0),ccU=Math.round(ccTot/ccLim*100);
   document.getElementById('cc-util-h').textContent=`${ccU}% utilised`;
+  const ccPay=S.emis.filter(e=>e.type==='Credit Card').reduce((s,e)=>s+e.amount,0);
+  const ccp=document.getElementById('cc-monthly-pay');if(ccp)ccp.textContent=fmt(ccPay);
+  // Dynamic CC alert based on actual largest balances
+  const ccAlert=document.getElementById('cc-alert-text');
+  if(ccAlert){
+    const activeCards=S.cc.filter(c=>c.outstanding>0).sort((a,b)=>b.outstanding-a.outstanding);
+    if(activeCards.length===0){ ccAlert.textContent='No outstanding credit card balances — excellent. Keep utilisation low to protect your credit score.'; }
+    else {
+      const big=activeCards[0], second=activeCards[1];
+      let t=`You carry ${fmt(ccTot)} across ${activeCards.length} card${activeCards.length>1?'s':''} at ${ccU}% utilisation. Credit cards typically charge the highest interest of any borrowing, so clearing ${big.name} (${fmt(big.outstanding)}) first reduces your interest cost fastest`;
+      if(second) t+=`, followed by ${second.name} (${fmt(second.outstanding)})`;
+      t+='. Keeping utilisation under 30% also improves your credit score.';
+      ccAlert.textContent=t;
+    }
+  }
   document.getElementById('cc-mini').innerHTML=S.cc.map(c=>{
     const u=c.limit>0?Math.round(c.outstanding/c.limit*100):0;
     return`<div class="cr">
@@ -864,37 +910,40 @@ function renderAll(){
     <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Consumer loans</div><div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:4px">${fmt(plAmt+glAmt+totCC())}</div></div>
     <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Personal dues</div><div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--amber);margin-top:4px">${fmt(totDues())}</div></div>
   `;
-  const debtData=[
-    ['Home Loan 1 — Bajaj (Main)',6670708,7974335,'Home Loan',8.9],
-    ['Home Loan 2 — Bajaj',437975,null,'Home Loan',9.9],
-    ['Home Loan 3 — Bajaj',558947,null,'Home Loan',9.9],
-    ['ICICI Personal Loan',1102785,1146896,'Personal Loan',18],
-    ['TVS iQube EV Bike',108623,112968,'Vehicle Loan',9],
-    ['Poonawalla Finance',331361,344615,'Personal Loan',22],
-    ['Amruta Gold Loan',415500,415500,'Gold Loan',14],
-    ['Nihar Gold Loan',752800,752800,'Gold Loan',14],
-    ['Credit Cards (total)',586944,586944,'Credit Card',36],
-    ['Jupiter Loan',150000,156000,'Personal Loan',24],
-    ['Aditya Birla Capital',249035,258996,'Personal Loan',20],
-    ["Mama's Amount",385000,385000,'Personal Due',0],
-    ['Sheetal Akka',450000,450000,'Personal Due',0],
-    ['Mummy Gold',150000,150000,'Personal Due',0],
-    ['Nithish',100000,100000,'Personal Due',0],
+  const debtRows=[
+    ...[...S.emis].sort((a,b)=>b.outstanding-a.outstanding).map(e=>({n:e.name,out:e.outstanding,t:e.type,rl:e.rate>0?e.rate+'% p.a.':'—'})),
+    ...[...S.dues].sort((a,b)=>b.amount-a.amount).map(d=>({n:d.name,out:d.amount,t:'Personal Due',rl:d.interest?'Has interest':'No interest'}))
   ];
-  document.getElementById('debt-rows').innerHTML=debtData.map(([n,out,cl,t,r])=>`
-    <div class="cr"><div class="cr-icon" style="background:${(typeCol[t]||'#8b949e')}22">${typeIcon[t]||'👤'}</div>
-    <div class="cr-body"><div class="cr-title">${n}</div><div class="cr-sub">${t} · ${r>0?r+'% p.a.':'No interest'}</div></div>
-    <div class="cr-right"><div class="cr-val r">${fmt(out)}</div>${cl?`<div style="font-size:10px;color:var(--text3)">Close: ${fmt(cl)}</div>`:''}</div></div>`).join('');
+  document.getElementById('debt-rows').innerHTML=debtRows.map(o=>`
+    <div class="cr"><div class="cr-icon" style="background:${(typeCol[o.t]||'#8b949e')}22">${typeIcon[o.t]||'👤'}</div>
+    <div class="cr-body"><div class="cr-title">${o.n}</div><div class="cr-sub">${o.t} · ${o.rl}</div></div>
+    <div class="cr-right"><div class="cr-val r">${fmt(o.out)}</div></div></div>`).join('');
 
-  document.getElementById('payoff-rows').innerHTML=[
-    ['1','Credit Cards','36% p.a.','Use Deloitte variable pay Rs.1,24,351 immediately','r','Urgent now'],
-    ['2','Jupiter Loan','24% p.a.','Rs.1,50,000 outstanding — close with 2-3 months surplus','r','High priority'],
-    ['3','Poonawalla Finance','22% p.a.','Rs.3,31,361 — after Jupiter is cleared','a','Next target'],
-    ['4','Aditya Birla Capital','20% p.a.','Rs.2,49,035 — use ADF variable pay when received','a','Next target'],
-    ['5','ICICI Personal Loan','18% p.a.','Rs.11,02,785 — long term, reduce via part-payments','b','6-12 months'],
-    ['6','Gold Loans (both)','14% p.a.','Nihar + Amruta combined Rs.11,68,300','p','After above'],
-    ['7','Personal dues','0% interest','Pay Sheetal Akka + Mama when surplus allows','g','Flexible'],
-  ].map(([n,name,rate,desc,c,tag])=>`
+  document.getElementById('payoff-rows').innerHTML=(function(){
+    // Build payoff strategy purely from live data — avalanche method (highest rate first)
+    const consumer=[...S.emis].filter(e=>e.type!=='Home Loan').sort((a,b)=>b.rate-a.rate);
+    const homeLoans=[...S.emis].filter(e=>e.type==='Home Loan');
+    const noInterestDues=[...S.dues].filter(d=>!d.interest).sort((a,b)=>b.amount-a.amount);
+    let rows=[];
+    consumer.forEach((e,i)=>{
+      const urgency = e.rate>=30?['r','Highest cost']:e.rate>=20?['r','High priority']:e.rate>=15?['a','Next target']:['p','Lower priority'];
+      rows.push([String(i+1), e.name, e.rate+'% p.a.',
+        `${fmt(e.outstanding)} outstanding · frees ${fmt(e.amount)}/month once cleared`,
+        urgency[0], urgency[1]]);
+    });
+    // Home loans last among interest-bearing (lowest rate, tax-advantaged)
+    homeLoans.forEach((e)=>{
+      rows.push([String(rows.length+1), e.name, e.rate+'% p.a.',
+        `${fmt(e.outstanding)} · low rate & tax-deductible — do not prioritise prepayment`, 'b', 'Keep running']);
+    });
+    // No-interest personal dues — flexible, after interest debt
+    if(noInterestDues.length){
+      const totNI=noInterestDues.reduce((s,d)=>s+d.amount,0);
+      rows.push([String(rows.length+1), 'Personal dues ('+noInterestDues.length+' people)', '0% interest',
+        `${fmt(totNI)} total · no interest cost, so settle these only after interest-bearing debt is cleared`, 'g', 'Flexible']);
+    }
+    return rows;
+  })().map(([n,name,rate,desc,c,tag])=>`
     <div class="cr">
       <div class="cr-icon" style="background:var(--bg3);color:var(--text3);font-size:11px;font-weight:700">${n}</div>
       <div class="cr-body"><div class="cr-title">${name} <span style="color:var(--text3);font-weight:400">· ${rate}</span></div><div class="cr-sub">${desc}</div></div>
