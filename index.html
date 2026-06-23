@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sughosh Anney — Finance Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── THEME TOKENS ─────────────────────────────────────────────────────── */
+[data-theme="dark"]{
+  --bg:#0d1117; --bg2:#161b22; --bg3:#1c2128; --bg4:#21262d; --bg5:#30363d;
+  --text:#e6edf3; --text2:#8b949e; --text3:#484f58; --text4:#6e7681;
+  --border:#30363d; --border2:#21262d;
+  --green:#3fb950; --green-bg:rgba(63,185,80,.12); --green-b:rgba(63,185,80,.3);
+  --red:#f85149; --red-bg:rgba(248,81,73,.12); --red-b:rgba(248,81,73,.3);
+  --amber:#d29922; --amber-bg:rgba(210,153,34,.12); --amber-b:rgba(210,153,34,.3);
+  --blue:#58a6ff; --blue-bg:rgba(88,166,255,.12); --blue-b:rgba(88,166,255,.3);
+  --purple:#bc8cff; --purple-bg:rgba(188,140,255,.12); --purple-b:rgba(188,140,255,.3);
+  --accent:#238636; --accent2:#1f6feb;
+  --card-shadow:0 1px 3px rgba(0,0,0,.4);
+}
+[data-theme="light"]{
+  --bg:#f0f2f5; --bg2:#ffffff; --bg3:#f6f8fa; --bg4:#eaeef2; --bg5:#d0d7de;
+  --text:#1f2328; --text2:#636c76; --text3:#9aa3ad; --text4:#adb5bd;
+  --border:#d0d7de; --border2:#eaeef2;
+  --green:#1a7f37; --green-bg:rgba(26,127,55,.1); --green-b:rgba(26,127,55,.3);
+  --red:#cf222e; --red-bg:rgba(207,34,46,.1); --red-b:rgba(207,34,46,.3);
+  --amber:#9a6700; --amber-bg:rgba(154,103,0,.1); --amber-b:rgba(154,103,0,.3);
+  --blue:#0969da; --blue-bg:rgba(9,105,218,.1); --blue-b:rgba(9,105,218,.3);
+  --purple:#8250df; --purple-bg:rgba(130,80,223,.1); --purple-b:rgba(130,80,223,.3);
+  --accent:#1a7f37; --accent2:#0969da;
+  --card-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+/* ── RESET ─────────────────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;transition:background .2s,color .2s}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:3px}
+/* ── LAYOUT ─────────────────────────────────────────────────────────────── */
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.main{flex:1;overflow-y:auto;padding:24px}
+/* ── SIDEBAR ─────────────────────────────────────────────────────────────── */
+.sb-brand{padding:20px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#238636,#1f6feb);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;margin-bottom:10px}
+.sb-name{font-size:13px;font-weight:600;color:var(--text)}
+.sb-role{font-size:11px;color:var(--text3);margin-top:1px}
+.sb-nav{padding:10px 8px;flex:1}
+.sb-section{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:8px 8px 4px}
+.ni{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:6px;cursor:pointer;color:var(--text2);font-size:12px;font-weight:500;transition:all .15s;margin-bottom:1px;border:none;background:none;width:100%;text-align:left}
+.ni:hover{background:var(--bg3);color:var(--text)}
+.ni.active{background:var(--green-bg);color:var(--green);border:1px solid var(--green-b)}
+.ni svg{width:14px;height:14px;flex-shrink:0}
+.sb-surplus{margin:12px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px}
+.ss-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.ss-val{font-size:22px;font-weight:700;font-family:'DM Mono',monospace;margin-top:4px}
+.ss-sub{font-size:10px;color:var(--text3);margin-top:2px}
+/* ── TOPBAR ─────────────────────────────────────────────────────────────── */
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-title{font-size:15px;font-weight:600;color:var(--text)}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-pill{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--text2)}
+.tb-dot{width:6px;height:6px;border-radius:50%}
+.theme-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--text2);font-size:11px;font-weight:500;transition:all .15s}
+.theme-btn:hover{color:var(--text)}
+/* ── DASHBOARD HERO ─────────────────────────────────────────────────────── */
+.hero{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:24px}
+.hero-main{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden}
+.hero-main::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,var(--green-bg) 0%,transparent 70%);pointer-events:none}
+.hero-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.hero-amount{font-size:32px;font-weight:700;font-family:'DM Mono',monospace;line-height:1}
+.hero-sub{font-size:12px;color:var(--text2);margin-top:6px}
+.hero-bars{margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.hb-row{display:flex;align-items:center;gap:8px;font-size:11px}
+.hb-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.hb-label{color:var(--text2);flex:1}
+.hb-val{font-family:'DM Mono',monospace;font-weight:500;color:var(--text)}
+.hb-track{flex:0 0 80px;background:var(--bg4);border-radius:3px;height:4px;overflow:hidden}
+.hb-fill{height:4px;border-radius:3px}
+.hero-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;justify-content:space-between}
+.hs-label{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.hs-val{font-size:24px;font-weight:700;font-family:'DM Mono',monospace;margin-top:8px}
+.hs-change{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px}
+/* ── SECTION GRID ─────────────────────────────────────────────────────── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
+.dash-grid-2{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:24px}
+.dash-grid-full{margin-bottom:24px}
+/* ── CARDS ─────────────────────────────────────────────────────────────── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--card-shadow)}
+.card-header{padding:14px 18px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border2)}
+.card-title{font-size:12px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.05em}
+.card-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
+.card-body{padding:0}
+.cr{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-bottom:1px solid var(--border2);gap:12px;transition:background .1s}
+.cr:last-child{border-bottom:none}
+.cr:hover{background:var(--bg3)}
+.cr-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.cr-body{flex:1;min-width:0}
+.cr-title{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr-sub{font-size:10px;color:var(--text3);margin-top:1px}
+.cr-right{text-align:right;flex-shrink:0}
+.cr-val{font-size:12px;font-weight:600;font-family:'DM Mono',monospace}
+.cr-val.g{color:var(--green)}.cr-val.r{color:var(--red)}.cr-val.a{color:var(--amber)}.cr-val.b{color:var(--blue)}.cr-val.p{color:var(--purple)}
+/* ── ALERT STRIP ─────────────────────────────────────────────────────── */
+.alert-strip{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:8px;font-size:12px;border:1px solid;line-height:1.5}
+.alert svg{width:14px;height:14px;flex-shrink:0;margin-top:1px}
+.alert.danger{background:var(--red-bg);border-color:var(--red-b);color:var(--red)}
+.alert.warn{background:var(--amber-bg);border-color:var(--amber-b);color:var(--amber)}
+.alert.success{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+.alert.info{background:var(--blue-bg);border-color:var(--blue-b);color:var(--blue)}
+/* ── BADGES ─────────────────────────────────────────────────────────────── */
+.badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;border:1px solid;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.badge.r{background:var(--red-bg);border-color:var(--red-b);color:var(--red)}
+.badge.g{background:var(--green-bg);border-color:var(--green-b);color:var(--green)}
+.badge.a{background:var(--amber-bg);border-color:var(--amber-b);color:var(--amber)}
+.badge.b{background:var(--blue-bg);border-color:var(--blue-b);color:var(--blue)}
+.badge.p{background:var(--purple-bg);border-color:var(--purple-b);color:var(--purple)}
+/* ── DUE DATE CHIPS ─────────────────────────────────────────────────────── */
+.due-chips{display:flex;gap:8px;overflow-x:auto;padding:14px 18px;scrollbar-width:none}
+.due-chips::-webkit-scrollbar{display:none}
+.dc{flex-shrink:0;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;text-align:center;min-width:70px;cursor:default;transition:transform .15s}
+.dc:hover{transform:translateY(-1px)}
+.dc.urg{border-color:var(--red-b);background:var(--red-bg)}
+.dc.soon{border-color:var(--amber-b);background:var(--amber-bg)}
+.dc-day{font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--text)}
+.dc.urg .dc-day{color:var(--red)}.dc.soon .dc-day{color:var(--amber)}
+.dc-name{font-size:9px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:66px}
+.dc-amt{font-size:9px;color:var(--text4);margin-top:1px;font-family:'DM Mono',monospace}
+/* ── PROGRESS ─────────────────────────────────────────────────────────────── */
+.prog{margin-bottom:10px}
+.prog-top{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:4px}
+.prog-track{background:var(--bg4);border-radius:4px;height:6px;overflow:hidden}
+.prog-fill{height:6px;border-radius:4px;transition:width .6s}
+/* ── SUGGEST BOX ─────────────────────────────────────────────────────────── */
+.suggest{background:linear-gradient(135deg,#1a2a1a,#1a1f2e);border:1px solid var(--green-b);border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.sug-icon{font-size:16px;margin-bottom:6px}
+.sug-title{font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.sug-body{font-size:12px;color:var(--text2);line-height:1.6}
+/* ── SECTION TITLE ─────────────────────────────────────────────────────── */
+.st{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:0 0 10px}
+/* ── FORM PAGES ─────────────────────────────────────────────────────────── */
+.page{display:none}
+.page.active{display:block}
+.fc{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.fgrp{display:flex;flex-direction:column;gap:5px}
+.fgrp label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.fgrp input,.fgrp select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;font-family:'Inter',sans-serif;padding:8px 10px;outline:none;transition:border .15s;width:100%}
+.fgrp input:focus,.fgrp select:focus{border-color:var(--green)}
+.fgrp select option{background:var(--bg3)}
+.btn-p{background:var(--accent);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;padding:9px 16px;width:100%;margin-top:12px;font-family:'Inter',sans-serif;transition:opacity .15s}
+.btn-p:hover{opacity:.85}
+.btn-d{background:none;border:none;cursor:pointer;color:var(--text3);padding:3px 6px;border-radius:4px;font-size:14px;transition:color .15s;line-height:1}
+.btn-d:hover{color:var(--red)}
+.calc-res{background:var(--bg3);border:1px solid var(--green-b);border-radius:6px;padding:10px;margin-top:10px;font-size:12px;color:var(--green);display:none}
+.empty{padding:24px;text-align:center;color:var(--text3);font-size:12px}
+/* ── CC UTILISATION ─────────────────────────────────────────────────────── */
+.cc-util{height:4px;border-radius:2px;margin-top:4px}
+/* ── DEBT SECTION ─────────────────────────────────────────────────────── */
+.debt-hero{background:var(--bg2);border:1px solid var(--red-b);border-radius:12px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden}
+.debt-hero::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,var(--red-bg),transparent 70%);pointer-events:none}
+/* ── TAX PAGE ─────────────────────────────────────────────────────────────── */
+.tax-row{display:flex;justify-content:space-between;padding:9px 18px;border-bottom:1px solid var(--border2);font-size:12px;align-items:center}
+.tax-row:last-child{border-bottom:none}
+.tax-row.hl{background:var(--bg3)}
+/* ── PAGE HEADER ─────────────────────────────────────────────────────────── */
+.pg-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.pg-title{font-size:20px;font-weight:700;color:var(--text)}
+.pg-sub{font-size:12px;color:var(--text3);margin-top:2px}
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media(max-width:768px){
+  .app{flex-direction:column;height:auto}
+  .sidebar{width:100%;height:auto}
+  .content{height:auto}
+  .main{overflow-y:visible}
+  .hero,.dash-grid,.dash-grid-2{grid-template-columns:1fr}
+  .fg,.fg3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<!-- ── SIDEBAR ──────────────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sb-brand" onclick="sw('profile',document.querySelector('.ni-profile'))" style="cursor:pointer" title="Click to edit profile">
+    <div class="sb-avatar" id="sb-avatar">SA</div>
+    <div class="sb-name" id="sb-name-disp">Sughosh Anney</div>
+    <div class="sb-role" id="sb-role-disp">ADF Foods · Mumbai · FY 2026-27</div>
+    <div style="font-size:9px;color:var(--text3);margin-top:4px">✏️ click to edit profile</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <button class="ni active" onclick="sw('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard
+    </button>
+    <div class="sb-section">Finance</div>
+    <button class="ni" onclick="sw('income',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Income
+    </button>
+    <button class="ni" onclick="sw('emis',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>EMIs
+    </button>
+    <button class="ni" onclick="sw('expenses',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>Expenses
+    </button>
+    <button class="ni" onclick="sw('cc',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Credit Cards
+    </button>
+    <div class="sb-section">Liabilities</div>
+    <button class="ni" onclick="sw('loans',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Add Loan
+    </button>
+    <button class="ni" onclick="sw('dues',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Personal Dues
+    </button>
+    <button class="ni" onclick="sw('debt',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Total Debt
+    </button>
+    <div class="sb-section">Planning</div>
+    <button class="ni" onclick="sw('tax',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Tax Plan
+    </button>
+    <div class="sb-section">Settings</div>
+    <button class="ni ni-profile" onclick="sw('profile',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile
+    </button>
+  </nav>
+  <div class="sb-surplus">
+    <div class="ss-label">Monthly surplus</div>
+    <div class="ss-val" id="sb-val" style="color:var(--green)">...</div>
+    <div class="ss-sub" id="sb-sub">of Rs.2,10,110 income</div>
+  </div>
+</aside>
+
+<!-- ── CONTENT ──────────────────────────────────────────────────────── -->
+<div class="content">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-title" id="pg-ttl">Dashboard</div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-pill"><div class="tb-dot" id="r-dot"></div><span>EMI ratio: <strong id="r-val">—</strong></span></div>
+      <div class="tb-pill"><span>Debt: <strong id="tb-debt" style="color:var(--red)">—</strong></span></div>
+      <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️ Light</button>
+    </div>
+  </div>
+  <div class="main">
+
+  <!-- ── DASHBOARD PAGE ─────────────────────────────────────────── -->
+  <div id="pg-dashboard" class="page active">
+
+    <!-- Alert strip -->
+    <div class="alert-strip" id="az"></div>
+
+    <!-- Hero row -->
+    <div class="hero" style="margin-bottom:20px">
+      <div class="hero-main card" style="border-radius:12px;padding:20px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;right:0;width:180px;height:180px;background:radial-gradient(circle,var(--green-bg),transparent 70%);pointer-events:none"></div>
+        <div class="hero-label">Monthly cash flow</div>
+        <div class="hero-amount" id="hero-surplus" style="color:var(--green)">...</div>
+        <div class="hero-sub" id="hero-sub">surplus this month</div>
+        <div class="hero-bars" id="hero-bars"></div>
+      </div>
+      <div class="card" style="padding:18px;border-radius:12px">
+        <div class="hero-label">EMI burden</div>
+        <div style="font-size:28px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red)" id="hero-emi">...</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px" id="hero-emi-sub">of monthly income</div>
+        <div style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px"><span>Safe limit 50%</span><span id="emi-pct">—</span></div>
+          <div style="background:var(--bg4);border-radius:4px;height:8px;overflow:hidden"><div id="emi-bar" style="height:8px;border-radius:4px;background:var(--red);transition:width .6s"></div></div>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--text3)"><span id="loan-count">—</span> active loans</div>
+      </div>
+      <div class="card" style="padding:18px;border-radius:12px">
+        <div class="hero-label">Total outstanding debt</div>
+        <div style="font-size:22px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red)" id="hero-debt">...</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">across all obligations</div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:5px" id="debt-mini"></div>
+      </div>
+    </div>
+
+    <!-- Smart suggestion -->
+    <div class="suggest">
+      <div class="sug-icon">💡</div>
+      <div class="sug-title">Smart recommendation</div>
+      <div class="sug-body" id="sug-text">Loading...</div>
+    </div>
+
+    <!-- Due dates -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header"><span class="card-title">Upcoming EMI due dates</span><span class="card-badge" id="due-this-month" style="background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-b)">this month</span></div>
+      <div class="due-chips" id="due-chips"></div>
+    </div>
+
+    <!-- 3-col grid -->
+    <div class="dash-grid">
+      <!-- Income sources -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Income sources</span><span class="cr-val g" style="font-size:13px" id="inc-total-h">—</span></div>
+        <div class="card-body" id="inc-mini"></div>
+      </div>
+      <!-- Pre-closure -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Pre-closure priority</span><span class="card-badge badge r">by interest rate</span></div>
+        <div class="card-body" id="pc-mini"></div>
+      </div>
+      <!-- Expenses -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Monthly expenses</span><span class="cr-val r" style="font-size:13px" id="exp-total-h">—</span></div>
+        <div class="card-body" id="exp-mini"></div>
+      </div>
+    </div>
+
+    <!-- 2-col grid -->
+    <div class="dash-grid-2">
+      <!-- Loan type breakdown -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Loan burden by type</span></div>
+        <div style="padding:14px 18px" id="lb-bars"></div>
+      </div>
+      <!-- CC summary -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Credit cards</span><span class="badge r" id="cc-util-h">—% utilised</span></div>
+        <div class="card-body" id="cc-mini"></div>
+        <div style="padding:10px 18px;border-top:1px solid var(--border2);font-size:11px;color:var(--text3)">Monthly payment: <strong style="color:var(--red)">Rs.14,718</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INCOME PAGE ─────────────────────────────────────────── -->
+  <div id="pg-income" class="page">
+    <div class="pg-header"><div><div class="pg-title">Income sources</div><div class="pg-sub">All monthly income tracked here</div></div></div>
+    <div class="fc">
+      <div class="fg">
+        <div class="fgrp"><label>Source name</label><input id="in-n" placeholder="e.g. ADF Salary"></div>
+        <div class="fgrp"><label>Monthly amount (Rs.)</label><input id="in-a" type="number"></div>
+      </div>
+      <div class="fgrp" style="margin-top:10px"><label>Type</label>
+        <select id="in-t"><option>Salary</option><option>Family support</option><option>Side income</option><option>Spouse income</option><option>Business</option><option>Other</option></select>
+      </div>
+      <button class="btn-p" onclick="addIncome()">+ Add income source</button>
+    </div>
+    <div class="card" id="inc-full"></div>
+    <div class="card" style="padding:11px 18px;margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text2)">Total monthly income</span><span style="font-weight:700;color:var(--green);font-family:'DM Mono',monospace" id="tot-inc">—</span></div></div>
+  </div>
+
+  <!-- ── EMI PAGE ─────────────────────────────────────────── -->
+  <div id="pg-emis" class="page">
+    <div class="pg-header"><div><div class="pg-title">EMI manager</div><div class="pg-sub">All loan repayments in one place</div></div></div>
+    <div class="fc">
+      <div class="fg">
+        <div class="fgrp"><label>Loan name</label><input id="em-n" placeholder="e.g. Personal Loan"></div>
+        <div class="fgrp"><label>Monthly EMI (Rs.)</label><input id="em-a" type="number"></div>
+      </div>
+      <div class="fg3" style="margin-top:10px">
+        <div class="fgrp"><label>Due date (day)</label><input id="em-d" type="number" min="1" max="31" placeholder="5"></div>
+        <div class="fgrp"><label>Outstanding (Rs.)</label><input id="em-o" type="number"></div>
+        <div class="fgrp"><label>Interest % p.a.</label><input id="em-r" type="number"></div>
+      </div>
+      <div class="fgrp" style="margin-top:10px"><label>Type</label>
+        <select id="em-t"><option>Home Loan</option><option>Personal Loan</option><option>Gold Loan</option><option>Vehicle Loan</option><option>Credit Card</option><option>Business Loan</option><option>Other</option></select>
+      </div>
+      <button class="btn-p" onclick="addEMI()">+ Add EMI</button>
+    </div>
+    <div class="card" id="emi-full"></div>
+    <div class="card" style="padding:11px 18px;margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text2)">Total monthly EMIs</span><span style="font-weight:700;color:var(--red);font-family:'DM Mono',monospace" id="tot-emi">—</span></div></div>
+  </div>
+
+  <!-- ── EXPENSES PAGE ─────────────────────────────────────────── -->
+  <div id="pg-expenses" class="page">
+    <div class="pg-header"><div><div class="pg-title">Monthly expenses</div><div class="pg-sub">Living costs and recurring payments</div></div></div>
+    <div class="fc">
+      <div class="fg">
+        <div class="fgrp"><label>Expense name</label><input id="ex-n" placeholder="e.g. Mumbai Rent"></div>
+        <div class="fgrp"><label>Monthly amount (Rs.)</label><input id="ex-a" type="number"></div>
+      </div>
+      <div class="fgrp" style="margin-top:10px"><label>Category</label>
+        <select id="ex-c"><option>Rent</option><option>Groceries</option><option>Travel</option><option>Utilities</option><option>Food</option><option>Insurance</option><option>Investment</option><option>Medical</option><option>Education</option><option>Entertainment</option><option>Other</option></select>
+      </div>
+      <button class="btn-p" onclick="addExpense()">+ Add expense</button>
+    </div>
+    <div class="card" id="exp-full"></div>
+    <div class="card" style="padding:11px 18px;margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--text2)">Total monthly expenses</span><span style="font-weight:700;color:var(--red);font-family:'DM Mono',monospace" id="tot-exp">—</span></div></div>
+  </div>
+
+  <!-- ── CREDIT CARDS PAGE ─────────────────────────────────────────── -->
+  <div id="pg-cc" class="page">
+    <div class="pg-header"><div><div class="pg-title">Credit cards</div><div class="pg-sub">6 cards · Rs.5,86,944 outstanding · Rs.14,718/month payment</div></div></div>
+    <div class="alert warn" style="margin-bottom:16px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div>At Rs.14,718/month you're mostly paying interest (~36% p.a.). Priority: clear One Card (Rs.2,62,765) then UNI Card (Rs.1,01,179) first. Use Deloitte variable pay for this.</div>
+    </div>
+    <div class="card" id="cc-full"></div>
+    <div style="margin-top:16px"><div class="st">Add credit card</div></div>
+    <div class="fc">
+      <div class="fg">
+        <div class="fgrp"><label>Card name</label><input id="cc-n" placeholder="e.g. Amazon ICICI"></div>
+        <div class="fgrp"><label>Total limit (Rs.)</label><input id="cc-l" type="number"></div>
+      </div>
+      <div class="fg3" style="margin-top:10px">
+        <div class="fgrp"><label>Outstanding (Rs.)</label><input id="cc-o" type="number"></div>
+        <div class="fgrp"><label>Billing date (day)</label><input id="cc-b" type="number" min="1" max="31"></div>
+        <div class="fgrp"><label>Due date (day)</label><input id="cc-d" type="number" min="1" max="31"></div>
+      </div>
+      <button class="btn-p" onclick="addCC()">+ Add card</button>
+    </div>
+  </div>
+
+  <!-- ── ADD LOAN PAGE ─────────────────────────────────────────── -->
+  <div id="pg-loans" class="page">
+    <div class="pg-header"><div><div class="pg-title">Add new loan</div><div class="pg-sub">EMI is auto-calculated from principal, rate and tenure</div></div></div>
+    <div class="fc">
+      <div class="fg">
+        <div class="fgrp"><label>Loan name</label><input id="ln-n" placeholder="e.g. Business Loan"></div>
+        <div class="fgrp"><label>Principal amount (Rs.)</label><input id="ln-a" type="number" placeholder="100000"></div>
+      </div>
+      <div class="fg3" style="margin-top:10px">
+        <div class="fgrp"><label>Interest % p.a.</label><input id="ln-r" type="number" placeholder="18"></div>
+        <div class="fgrp"><label>Tenure (months)</label><input id="ln-t" type="number" placeholder="24"></div>
+        <div class="fgrp"><label>Purpose</label><select id="ln-p"><option>Business</option><option>Personal</option><option>Medical</option><option>Education</option><option>Other</option></select></div>
+      </div>
+      <button class="btn-p" onclick="addLoan()">Calculate & add loan</button>
+      <div class="calc-res" id="calc-res"></div>
+    </div>
+    <div class="st" style="margin-top:4px">All current loans</div>
+    <div class="card" id="loan-full"></div>
+  </div>
+
+  <!-- ── PERSONAL DUES PAGE ─────────────────────────────────────────── -->
+  <div id="pg-dues" class="page">
+    <div class="pg-header"><div><div class="pg-title">Personal dues</div><div class="pg-sub">Lump sum amounts owed to family and friends</div></div></div>
+    <div class="alert info" style="margin-bottom:16px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div>All personal dues are <strong>no-interest, lump sum</strong>. No monthly payment required. Pay when surplus allows. Total: Rs.15,38,444.</div>
+    </div>
+    <div class="card" id="dues-full"></div>
+    <div style="margin-top:16px"><div class="st">Add personal due</div></div>
+    <div class="fc">
+      <div class="fg">
+        <div class="fgrp"><label>Person / entity</label><input id="du-n" placeholder="e.g. Shridhar Bhai"></div>
+        <div class="fgrp"><label>Amount owed (Rs.)</label><input id="du-a" type="number"></div>
+      </div>
+      <div class="fg" style="margin-top:10px">
+        <div class="fgrp"><label>Type</label><select id="du-t"><option>Family</option><option>Friend</option><option>Bank</option><option>Institution</option><option>Other</option></select></div>
+        <div class="fgrp"><label>Interest</label><select id="du-i"><option>No interest</option><option>Has interest</option></select></div>
+      </div>
+      <button class="btn-p" onclick="addDue()">+ Add due</button>
+    </div>
+  </div>
+
+  <!-- ── TOTAL DEBT PAGE ─────────────────────────────────────────── -->
+  <div id="pg-debt" class="page">
+    <div class="pg-header"><div><div class="pg-title">Total debt overview</div><div class="pg-sub">Complete picture of every rupee owed</div></div></div>
+    <div class="debt-hero">
+      <div style="font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.07em">Grand total outstanding</div>
+      <div style="font-size:34px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:6px" id="grand-total">—</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Closing cost with penalties: <strong style="color:var(--text2)">Rs.1,28,34,055</strong></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px" id="debt-cats"></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><span class="card-title">Complete debt breakdown</span></div>
+      <div id="debt-rows"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Payoff strategy</span><span class="badge g">avalanche method</span></div>
+      <div id="payoff-rows"></div>
+    </div>
+  </div>
+
+  <!-- ── TAX PAGE ─────────────────────────────────────────── -->
+  <div id="pg-tax" class="page">
+    <div class="pg-header"><div><div class="pg-title">Tax plan FY 2026-27</div><div class="pg-sub">Old Regime · ADF Foods Mumbai · Saves Rs.1,21,820 vs New Regime</div></div></div>
+    <div class="dash-grid" style="margin-bottom:20px" id="tax-stats"></div>
+    <div class="dash-grid-2">
+      <div class="card"><div class="card-header"><span class="card-title">Deductions tracker</span><span class="badge g">Old regime</span></div><div id="tax-ded"></div></div>
+      <div class="card"><div class="card-header"><span class="card-title">Tax computation</span></div><div id="tax-sum"></div></div>
+    </div>
+    <div class="card"><div class="card-header"><span class="card-title">Action checklist</span></div><div id="tax-chk"></div></div>
+  </div>
+
+
+  <!-- ── PROFILE PAGE ─────────────────────────────────────────── -->
+  <div id="pg-profile" class="page">
+    <div class="pg-header"><div><div class="pg-title">My Profile</div><div class="pg-sub">Your details — updates reflect everywhere in the app</div></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div class="fc">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+            <div id="profile-avatar-preview" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#238636,#1f6feb);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">SA</div>
+            <div>
+              <div id="profile-name-preview" style="font-size:16px;font-weight:700;color:var(--text)">Sughosh Anney</div>
+              <div id="profile-role-preview" style="font-size:12px;color:var(--text3);margin-top:2px">ADF Foods · Mumbai · FY 2026-27</div>
+            </div>
+          </div>
+          <div class="fg" style="margin-bottom:10px">
+            <div class="fgrp"><label>Full name</label><input id="prof-name" value="Sughosh Anney" oninput="previewProfile()"></div>
+            <div class="fgrp"><label>Initials (shown in avatar)</label><input id="prof-init" value="SA" maxlength="2" oninput="previewProfile()"></div>
+          </div>
+          <div class="fg" style="margin-bottom:10px">
+            <div class="fgrp"><label>Employer / Company</label><input id="prof-company" value="ADF Foods" oninput="previewProfile()"></div>
+            <div class="fgrp"><label>City / Location</label><input id="prof-city" value="Mumbai" oninput="previewProfile()"></div>
+          </div>
+          <div class="fg" style="margin-bottom:10px">
+            <div class="fgrp"><label>Designation</label><input id="prof-desig" value="Assistant Manager - FP&A" oninput="previewProfile()"></div>
+            <div class="fgrp"><label>Financial year</label>
+              <select id="prof-fy" oninput="previewProfile()">
+                <option value="FY 2026-27" selected>FY 2026-27</option>
+                <option value="FY 2027-28">FY 2027-28</option>
+                <option value="FY 2025-26">FY 2025-26</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <div class="fgrp"><label>PAN number</label><input id="prof-pan" value="CQDPA9373B"></div>
+            <div class="fgrp"><label>Tax regime</label>
+              <select id="prof-regime">
+                <option value="Old Regime" selected>Old Regime</option>
+                <option value="New Regime">New Regime</option>
+              </select>
+            </div>
+          </div>
+          <div class="fgrp" style="margin-top:10px"><label>Avatar color theme</label>
+            <select id="prof-color" oninput="previewProfile()">
+              <option value="135deg,#238636,#1f6feb" selected>Green → Blue (default)</option>
+              <option value="135deg,#6366f1,#ec4899">Purple → Pink</option>
+              <option value="135deg,#f59e0b,#ef4444">Amber → Red</option>
+              <option value="135deg,#06b6d4,#3b82f6">Cyan → Blue</option>
+              <option value="135deg,#10b981,#059669">Green shades</option>
+            </select>
+          </div>
+          <button class="btn-p" onclick="saveProfile()">💾 Save profile</button>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-header"><span class="card-title">Financial summary</span></div>
+          <div id="prof-summary"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">App settings</span></div>
+          <div class="cr">
+            <div class="cr-body"><div class="cr-title">Theme</div><div class="cr-sub">Switch between light and dark mode</div></div>
+            <button class="theme-btn" onclick="toggleTheme()" id="profile-theme-btn" style="padding:6px 14px">☀️ Light mode</button>
+          </div>
+          <div class="cr">
+            <div class="cr-body"><div class="cr-title">Currency</div><div class="cr-sub">Indian Rupee (Rs.) — fixed</div></div>
+            <span class="badge g">Rs. INR</span>
+          </div>
+          <div class="cr">
+            <div class="cr-body"><div class="cr-title">Data</div><div class="cr-sub">All data stored in browser memory</div></div>
+            <span class="badge b">Local</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /main -->
+</div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+const fmt=n=>'Rs.'+Math.abs(Math.round(n)).toLocaleString('en-IN');
+const fmtS=n=>(n>=0?'+Rs.':'-Rs.')+Math.abs(Math.round(n)).toLocaleString('en-IN');
+const calcEMI=(p,r,n)=>{const m=r/(12*100);return m===0?p/n:p*m*Math.pow(1+m,n)/(Math.pow(1+m,n)-1);};
+let nid=300;
+
+const S={
+  incomes:[
+    {id:1,name:'ADF Foods Net Salary',amount:136110,type:'Salary'},
+    {id:2,name:"Brother's Contribution",amount:44000,type:'Family support'},
+    {id:3,name:'Spouse Income',amount:15000,type:'Spouse income'},
+    {id:4,name:'Extra Duty / Side Work',amount:15000,type:'Side income'},
+  ],
+  emis:[
+    {id:1,name:'Home Loan 1 — Bajaj (Main)',amount:55492,due:5,type:'Home Loan',outstanding:6670708,rate:8.9},
+    {id:2,name:'Home Loan 2 — Bajaj',amount:8079,due:5,type:'Home Loan',outstanding:437975,rate:9.9},
+    {id:3,name:'Home Loan 3 — Bajaj',amount:5022,due:5,type:'Home Loan',outstanding:558947,rate:9.9},
+    {id:4,name:'ICICI Personal Loan',amount:28500,due:5,type:'Personal Loan',outstanding:1102785,rate:18},
+    {id:5,name:'Poonawalla Finance',amount:14430,due:5,type:'Personal Loan',outstanding:331361,rate:22},
+    {id:6,name:'Credit Cards (combined)',amount:14718,due:2,type:'Credit Card',outstanding:586944,rate:36},
+    {id:7,name:'Jupiter Loan',amount:9565,due:5,type:'Personal Loan',outstanding:150000,rate:24},
+    {id:8,name:'Aditya Birla Capital',amount:10179,due:5,type:'Personal Loan',outstanding:249035,rate:20},
+    {id:9,name:'Nihar Gold Loan',amount:7595,due:1,type:'Gold Loan',outstanding:752800,rate:14},
+    {id:10,name:'Amruta Gold Loan',amount:7038,due:1,type:'Gold Loan',outstanding:415500,rate:14},
+    {id:11,name:'TVS iQube EV Bike',amount:5055,due:3,type:'Vehicle Loan',outstanding:108623,rate:9},
+  ],
+  expenses:[
+    {id:1,name:'Mumbai Rent',amount:16000,cat:'Rent'},
+    {id:2,name:'Groceries + Household',amount:8000,cat:'Groceries'},
+    {id:3,name:'Travel (Mumbai local)',amount:3000,cat:'Travel'},
+    {id:4,name:'Utilities',amount:3000,cat:'Utilities'},
+    {id:5,name:'Food / Basics',amount:4000,cat:'Food'},
+    {id:6,name:'Miscellaneous',amount:2000,cat:'Other'},
+  ],
+  cc:[
+    {id:1,name:'Amazon ICICI',limit:50000,outstanding:50000,billing:27,due:15},
+    {id:2,name:'HDFC Money Back',limit:74000,outstanding:73000,billing:20,due:10},
+    {id:3,name:'Jupiter CSB',limit:100000,outstanding:100000,billing:26,due:11},
+    {id:4,name:'HDFC Neu Rupay',limit:4000,outstanding:0,billing:20,due:10},
+    {id:5,name:'One Card',limit:270000,outstanding:262765,billing:18,due:8},
+    {id:6,name:'UNI Card',limit:100000,outstanding:101179,billing:15,due:5},
+  ],
+  dues:[
+    {id:1,name:'Shridhar Bhai',amount:100000,type:'Family',interest:false},
+    {id:2,name:'Neighbours Greenhills',amount:25000,type:'Friend',interest:false},
+    {id:3,name:'Vinod Anna',amount:70000,type:'Family',interest:false},
+    {id:4,name:'SSLLNS',amount:54000,type:'Other',interest:false},
+    {id:5,name:'Sheetal Akka',amount:450000,type:'Family',interest:false},
+    {id:6,name:'HDB Bank',amount:40000,type:'Bank',interest:true},
+    {id:7,name:'Naresh Anna',amount:37000,type:'Family',interest:false},
+    {id:8,name:'Tagor School',amount:10000,type:'Institution',interest:false},
+    {id:9,name:'Sushil Kaka',amount:8000,type:'Family',interest:false},
+    {id:10,name:'Sanju',amount:8000,type:'Friend',interest:false},
+    {id:11,name:'Jeevan Reddy',amount:4000,type:'Friend',interest:false},
+    {id:12,name:'Neighbours',amount:3000,type:'Other',interest:false},
+    {id:13,name:'Sanjay',amount:2500,type:'Friend',interest:false},
+    {id:14,name:"Mama's Amount",amount:385000,type:'Family',interest:false},
+  ]
+};
+
+const totInc=()=>S.incomes.reduce((s,i)=>s+i.amount,0);
+const totEMI=()=>S.emis.reduce((s,e)=>s+e.amount,0);
+const totExp=()=>S.expenses.reduce((s,e)=>s+e.amount,0);
+const surp=()=>totInc()-totEMI()-totExp();
+const emiRatio=()=>totInc()>0?Math.round(totEMI()/totInc()*100):0;
+const totDues=()=>S.dues.reduce((s,d)=>s+d.amount,0);
+const totCC=()=>S.cc.reduce((s,c)=>s+c.outstanding,0);
+const formalDebt=()=>S.emis.reduce((s,e)=>s+e.outstanding,0);
+const grandDebt=()=>formalDebt()+totDues();
+
+const typeCol={'Home Loan':'#58a6ff','Personal Loan':'#f85149','Credit Card':'#da3633','Gold Loan':'#d29922','Vehicle Loan':'#3fb950','Business Loan':'#bc8cff','Other':'#8b949e'};
+const typeIcon={'Home Loan':'🏠','Personal Loan':'💳','Credit Card':'💳','Gold Loan':'🥇','Vehicle Loan':'🛵','Business Loan':'💼','Other':'📋'};
+
+function getDue(day){
+  const d=new Date().getDate(),diff=day-d;
+  if(diff<0)return{cls:'',tag:'done'};
+  if(diff===0)return{cls:'urg',tag:'TODAY'};
+  if(diff<=3)return{cls:'soon',tag:`${diff}d`};
+  return{cls:'',tag:`${day}th`};
+}
+
+function getSug(){
+  const s=surp(),r=emiRatio();
+  const top=[...S.emis].filter(e=>e.type!=='Home Loan').sort((a,b)=>b.rate-a.rate)[0];
+  if(s<0)return`⚠️ You are in deficit by ${fmt(Math.abs(s))} this month. Ensure all 4 income sources are active. Reduce discretionary expenses immediately.`;
+  if(!top)return'✅ No consumer loans! Focus on building a 3-month emergency fund.';
+  if(s<15000)return`Budget is very tight — only ${fmt(s)} surplus. Use your Deloitte variable pay Rs.1,24,351 to clear Credit Cards (36% interest) + Jupiter Loan (24%) + Gold Loans first. This frees Rs.36,000+ monthly.`;
+  return`You have ${fmt(s)} surplus this month. Best move: close ${top.name} at ${top.rate}% p.a. — outstanding ${fmt(top.outstanding)}. Saves ${fmt(top.amount)}/month permanently. Then target the next highest rate loan.`;
+}
+
+const svgW=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+const svgC=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:1px"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+
+function renderAll(){
+  const inc=totInc(),emi=totEMI(),exp=totExp(),s=surp(),r=emiRatio();
+  const fd=formalDebt(),td=grandDebt();
+
+  // Topbar + sidebar
+  const sbv=document.getElementById('sb-val');
+  sbv.textContent=fmtS(s); sbv.style.color=s>=0?'var(--green)':'var(--red)';
+  document.getElementById('r-val').textContent=r+'%';
+  document.getElementById('r-dot').style.background=r>80?'var(--red)':r>50?'var(--amber)':'var(--green)';
+  document.getElementById('tb-debt').textContent=fmt(td);
+  updateProfileUI();
+
+  // ── DASHBOARD ──────────────────────────────────────────────────────
+  // Alerts
+  const az=document.getElementById('az'); az.innerHTML='';
+  if(s<0) az.innerHTML+=`<div class="alert danger">${svgW}<div><strong>Deficit alert:</strong> You are ${fmt(Math.abs(s))} short this month. All 4 income sources must be active.</div></div>`;
+  else if(s<15000) az.innerHTML+=`<div class="alert warn">${svgW}<div><strong>Tight budget:</strong> Only ${fmt(s)} surplus. No buffer for emergencies or unexpected costs.</div></div>`;
+  else az.innerHTML+=`<div class="alert success">${svgC}<div><strong>Budget balanced.</strong> ${fmt(s)} surplus available — channel it toward high-interest loan pre-closure.</div></div>`;
+  if(r>80) az.innerHTML+=`<div class="alert danger">${svgW}<div><strong>EMI ratio ${r}%</strong> — dangerously above the 50% safe limit. Pre-close consumer loans to bring this below 60%.</div></div>`;
+
+  // Hero
+  document.getElementById('hero-surplus').textContent=fmtS(s);
+  document.getElementById('hero-surplus').style.color=s>=0?'var(--green)':'var(--red)';
+  document.getElementById('hero-sub').textContent=s>=0?'surplus this month':'deficit this month';
+  const maxBar=inc;
+  document.getElementById('hero-bars').innerHTML=`
+    <div class="hb-row"><div class="hb-dot" style="background:var(--green)"></div><span class="hb-label">Income</span><span class="hb-val">${fmt(inc)}</span><div class="hb-track"><div class="hb-fill" style="width:100%;background:var(--green)"></div></div></div>
+    <div class="hb-row"><div class="hb-dot" style="background:var(--red)"></div><span class="hb-label">EMIs</span><span class="hb-val">${fmt(emi)}</span><div class="hb-track"><div class="hb-fill" style="width:${Math.min(100,Math.round(emi/maxBar*100))}%;background:var(--red)"></div></div></div>
+    <div class="hb-row"><div class="hb-dot" style="background:var(--amber)"></div><span class="hb-label">Expenses</span><span class="hb-val">${fmt(exp)}</span><div class="hb-track"><div class="hb-fill" style="width:${Math.min(100,Math.round(exp/maxBar*100))}%;background:var(--amber)"></div></div></div>
+  `;
+  document.getElementById('hero-emi').textContent=fmt(emi);
+  document.getElementById('hero-emi-sub').textContent=`${r}% of monthly income`;
+  document.getElementById('emi-pct').textContent=r+'%';
+  document.getElementById('emi-bar').style.width=Math.min(100,r)+'%';
+  document.getElementById('loan-count').textContent=S.emis.length;
+  document.getElementById('hero-debt').textContent=fmt(td);
+  const hlAmt=S.emis.filter(e=>e.type==='Home Loan').reduce((s,e)=>s+e.outstanding,0);
+  const plAmt=S.emis.filter(e=>e.type!=='Home Loan'&&e.type!=='Gold Loan').reduce((s,e)=>s+e.outstanding,0);
+  const glAmt=S.emis.filter(e=>e.type==='Gold Loan').reduce((s,e)=>s+e.outstanding,0);
+  document.getElementById('debt-mini').innerHTML=`
+    <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text3)">Home loans</span><span style="font-family:'DM Mono',monospace;color:var(--blue)">${fmt(hlAmt)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text3)">Consumer loans</span><span style="font-family:'DM Mono',monospace;color:var(--red)">${fmt(plAmt)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text3)">Gold loans</span><span style="font-family:'DM Mono',monospace;color:var(--amber)">${fmt(glAmt)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--text3)">Personal dues</span><span style="font-family:'DM Mono',monospace;color:var(--text2)">${fmt(totDues())}</span></div>
+  `;
+
+  // Suggestion
+  document.getElementById('sug-text').textContent=getSug();
+
+  // Due chips
+  document.getElementById('due-chips').innerHTML=[...S.emis].sort((a,b)=>a.due-b.due).map(e=>{
+    const{cls,tag}=getDue(e.due);
+    return`<div class="dc ${cls}"><div class="dc-day">${e.due}</div><div class="dc-name">${e.name.split('—')[0].trim().split(' ').slice(0,2).join(' ')}</div><div class="dc-amt">${fmt(e.amount)}</div></div>`;
+  }).join('');
+
+  // Income mini
+  document.getElementById('inc-total-h').textContent=fmt(inc);
+  document.getElementById('inc-mini').innerHTML=S.incomes.map(i=>`
+    <div class="cr">
+      <div class="cr-icon" style="background:var(--green-bg)">💰</div>
+      <div class="cr-body"><div class="cr-title">${i.name}</div><div class="cr-sub">${i.type}</div></div>
+      <div class="cr-right"><div class="cr-val g">${fmt(i.amount)}</div></div>
+    </div>`).join('');
+
+  // Pre-closure mini
+  const pre=[...S.emis].filter(e=>e.type!=='Home Loan').sort((a,b)=>b.rate-a.rate).slice(0,5);
+  document.getElementById('pc-mini').innerHTML=pre.map((e,i)=>`
+    <div class="cr">
+      <div class="cr-icon" style="background:${i===0?'var(--red-bg)':'var(--amber-bg)'}"><span style="font-size:11px;font-weight:700;color:${i===0?'var(--red)':'var(--amber)'}">${i+1}</span></div>
+      <div class="cr-body"><div class="cr-title">${e.name}</div><div class="cr-sub">${e.rate}% p.a. · ${fmt(e.outstanding)}</div></div>
+      <div class="cr-right"><div class="cr-val ${i===0?'r':'a'}">${fmt(e.amount)}/mo</div></div>
+    </div>`).join('');
+
+  // Expenses mini
+  document.getElementById('exp-total-h').textContent=fmt(exp);
+  document.getElementById('exp-mini').innerHTML=S.expenses.map(e=>`
+    <div class="cr">
+      <div class="cr-icon" style="background:var(--amber-bg)">📌</div>
+      <div class="cr-body"><div class="cr-title">${e.name}</div><div class="cr-sub">${e.cat}</div></div>
+      <div class="cr-right"><div class="cr-val a">${fmt(e.amount)}</div></div>
+    </div>`).join('');
+
+  // Loan bars
+  const grps={};S.emis.forEach(e=>{grps[e.type]=(grps[e.type]||0)+e.amount;});
+  document.getElementById('lb-bars').innerHTML=Object.entries(grps).map(([t,a])=>`
+    <div class="prog"><div class="prog-top"><span>${typeIcon[t]||'📋'} ${t}</span><span style="font-family:'DM Mono',monospace">${fmt(a)} · ${Math.round(a/emi*100)}%</span></div>
+    <div class="prog-track"><div class="prog-fill" style="width:${Math.round(a/emi*100)}%;background:${typeCol[t]||'#8b949e'}"></div></div></div>`).join('');
+
+  // CC mini
+  const ccTot=totCC(),ccLim=S.cc.reduce((s,c)=>s+c.limit,0),ccU=Math.round(ccTot/ccLim*100);
+  document.getElementById('cc-util-h').textContent=`${ccU}% utilised`;
+  document.getElementById('cc-mini').innerHTML=S.cc.map(c=>{
+    const u=c.limit>0?Math.round(c.outstanding/c.limit*100):0;
+    return`<div class="cr">
+      <div class="cr-icon" style="background:${u>80?'var(--red-bg)':u>50?'var(--amber-bg)':'var(--green-bg)'}">💳</div>
+      <div class="cr-body">
+        <div class="cr-title">${c.name}</div>
+        <div class="cr-sub">Due ${c.due}th · ${u}% utilised</div>
+        <div class="cc-util" style="width:${u}%;background:${u>80?'var(--red)':u>50?'var(--amber)':'var(--green)'}"></div>
+      </div>
+      <div class="cr-right"><div class="cr-val ${c.outstanding>0?'r':'g'}">${fmt(c.outstanding)}</div></div>
+    </div>`;}).join('');
+
+  // ── INCOME FULL PAGE ──────────────────────────────────────────────────
+  document.getElementById('inc-full').innerHTML=S.incomes.map(i=>`
+    <div class="cr"><div class="cr-icon" style="background:var(--green-bg)">💰</div>
+    <div class="cr-body"><div class="cr-title">${i.name}</div><div class="cr-sub">${i.type}</div></div>
+    <div style="display:flex;align-items:center;gap:8px"><span class="cr-val g">${fmt(i.amount)}/mo</span><button class="btn-d" onclick="del('incomes',${i.id})">×</button></div></div>`).join('')||'<div class="empty">No income sources</div>';
+  document.getElementById('tot-inc').textContent=fmt(inc);
+
+  // ── EMI FULL PAGE ──────────────────────────────────────────────────
+  document.getElementById('emi-full').innerHTML=[...S.emis].sort((a,b)=>a.due-b.due).map(e=>{
+    const{tag,cls}=getDue(e.due);
+    return`<div class="cr"><div class="cr-icon" style="background:${typeCol[e.type]}22">${typeIcon[e.type]||'📋'}</div>
+    <div class="cr-body"><div class="cr-title">${e.name}</div><div class="cr-sub">${e.type} · ${e.rate}% p.a. · Outstanding: ${fmt(e.outstanding)}</div></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="badge ${cls==='urg'?'r':cls==='soon'?'a':'g'}">${tag}</span>
+      <span class="cr-val r">${fmt(e.amount)}</span>
+      <button class="btn-d" onclick="del('emis',${e.id})">×</button>
+    </div></div>`;}).join('')||'<div class="empty">No EMIs</div>';
+  document.getElementById('tot-emi').textContent=fmt(emi);
+
+  // ── EXPENSES FULL PAGE ──────────────────────────────────────────────────
+  document.getElementById('exp-full').innerHTML=S.expenses.map(e=>`
+    <div class="cr"><div class="cr-icon" style="background:var(--amber-bg)">📌</div>
+    <div class="cr-body"><div class="cr-title">${e.name}</div><div class="cr-sub">${e.cat}</div></div>
+    <div style="display:flex;align-items:center;gap:8px"><span class="cr-val a">${fmt(e.amount)}/mo</span><button class="btn-d" onclick="del('expenses',${e.id})">×</button></div></div>`).join('')||'<div class="empty">No expenses</div>';
+  document.getElementById('tot-exp').textContent=fmt(exp);
+
+  // ── CC FULL PAGE ──────────────────────────────────────────────────
+  document.getElementById('cc-full').innerHTML=`
+    <div class="card-header"><span class="card-title">Card</span><span class="card-title" style="text-align:right">Limit · Outstanding · Due</span></div>`+
+    S.cc.map(c=>{
+      const u=c.limit>0?Math.round(c.outstanding/c.limit*100):0;
+      const{tag,cls}=getDue(c.due);
+      return`<div class="cr"><div class="cr-icon" style="background:${u>80?'var(--red-bg)':'var(--blue-bg)'}">💳</div>
+      <div class="cr-body">
+        <div class="cr-title">${c.name}</div>
+        <div class="cr-sub">Limit: ${fmt(c.limit)} · Bill: ${c.billing}th · Due: ${c.due}th</div>
+        <div class="cc-util" style="width:${u}%;background:${u>80?'var(--red)':u>50?'var(--amber)':'var(--green)'}"></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">${u}% utilised</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge ${cls==='urg'?'r':cls==='soon'?'a':'g'}">${tag}</span>
+        <span class="cr-val ${c.outstanding>0?'r':'g'}">${fmt(c.outstanding)}</span>
+        <button class="btn-d" onclick="delCC(${c.id})">×</button>
+      </div></div>`;}).join('');
+
+  // ── LOANS FULL PAGE ──────────────────────────────────────────────────
+  document.getElementById('loan-full').innerHTML=S.emis.map(l=>`
+    <div class="cr"><div class="cr-icon" style="background:${typeCol[l.type]||'#8b949e'}22">${typeIcon[l.type]||'📋'}</div>
+    <div class="cr-body"><div class="cr-title">${l.name}</div><div class="cr-sub">${l.type} · ${l.rate}% p.a.</div></div>
+    <div class="cr-right"><div style="font-size:10px;color:var(--text3)">Outstanding</div><div class="cr-val">${fmt(l.outstanding)}</div><div class="cr-val r" style="font-size:11px">${fmt(l.amount)}/mo</div></div></div>`).join('')||'<div class="empty">No loans</div>';
+
+  // ── DUES FULL PAGE ──────────────────────────────────────────────────
+  document.getElementById('dues-full').innerHTML=[...S.dues].sort((a,b)=>b.amount-a.amount).map(d=>`
+    <div class="cr"><div class="cr-icon" style="background:var(--amber-bg)">👤</div>
+    <div class="cr-body"><div class="cr-title">${d.name}</div><div class="cr-sub">${d.type} · ${d.interest?'Has interest':'No interest'}</div></div>
+    <div style="display:flex;align-items:center;gap:8px"><span class="cr-val a">${fmt(d.amount)}</span><button class="btn-d" onclick="delDue(${d.id})">×</button></div></div>`).join('')||'<div class="empty">No personal dues</div>';
+
+  // ── DEBT PAGE ──────────────────────────────────────────────────
+  document.getElementById('grand-total').textContent=fmt(td);
+  document.getElementById('debt-cats').innerHTML=`
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Home loans</div><div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--blue);margin-top:4px">${fmt(hlAmt)}</div></div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Consumer loans</div><div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:4px">${fmt(plAmt+glAmt+totCC())}</div></div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Personal dues</div><div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--amber);margin-top:4px">${fmt(totDues())}</div></div>
+  `;
+  const debtData=[
+    ['Home Loan 1 — Bajaj (Main)',6670708,7974335,'Home Loan',8.9],
+    ['Home Loan 2 — Bajaj',437975,null,'Home Loan',9.9],
+    ['Home Loan 3 — Bajaj',558947,null,'Home Loan',9.9],
+    ['ICICI Personal Loan',1102785,1146896,'Personal Loan',18],
+    ['TVS iQube EV Bike',108623,112968,'Vehicle Loan',9],
+    ['Poonawalla Finance',331361,344615,'Personal Loan',22],
+    ['Amruta Gold Loan',415500,415500,'Gold Loan',14],
+    ['Nihar Gold Loan',752800,752800,'Gold Loan',14],
+    ['Credit Cards (total)',586944,586944,'Credit Card',36],
+    ['Jupiter Loan',150000,156000,'Personal Loan',24],
+    ['Aditya Birla Capital',249035,258996,'Personal Loan',20],
+    ["Mama's Amount",385000,385000,'Personal Due',0],
+    ['Sheetal Akka',450000,450000,'Personal Due',0],
+    ['Mummy Gold',150000,150000,'Personal Due',0],
+    ['Nithish',100000,100000,'Personal Due',0],
+  ];
+  document.getElementById('debt-rows').innerHTML=debtData.map(([n,out,cl,t,r])=>`
+    <div class="cr"><div class="cr-icon" style="background:${(typeCol[t]||'#8b949e')}22">${typeIcon[t]||'👤'}</div>
+    <div class="cr-body"><div class="cr-title">${n}</div><div class="cr-sub">${t} · ${r>0?r+'% p.a.':'No interest'}</div></div>
+    <div class="cr-right"><div class="cr-val r">${fmt(out)}</div>${cl?`<div style="font-size:10px;color:var(--text3)">Close: ${fmt(cl)}</div>`:''}</div></div>`).join('');
+
+  document.getElementById('payoff-rows').innerHTML=[
+    ['1','Credit Cards','36% p.a.','Use Deloitte variable pay Rs.1,24,351 immediately','r','Urgent now'],
+    ['2','Jupiter Loan','24% p.a.','Rs.1,50,000 outstanding — close with 2-3 months surplus','r','High priority'],
+    ['3','Poonawalla Finance','22% p.a.','Rs.3,31,361 — after Jupiter is cleared','a','Next target'],
+    ['4','Aditya Birla Capital','20% p.a.','Rs.2,49,035 — use ADF variable pay when received','a','Next target'],
+    ['5','ICICI Personal Loan','18% p.a.','Rs.11,02,785 — long term, reduce via part-payments','b','6-12 months'],
+    ['6','Gold Loans (both)','14% p.a.','Nihar + Amruta combined Rs.11,68,300','p','After above'],
+    ['7','Personal dues','0% interest','Pay Sheetal Akka + Mama when surplus allows','g','Flexible'],
+  ].map(([n,name,rate,desc,c,tag])=>`
+    <div class="cr">
+      <div class="cr-icon" style="background:var(--bg3);color:var(--text3);font-size:11px;font-weight:700">${n}</div>
+      <div class="cr-body"><div class="cr-title">${name} <span style="color:var(--text3);font-weight:400">· ${rate}</span></div><div class="cr-sub">${desc}</div></div>
+      <span class="badge ${c}">${tag}</span>
+    </div>`).join('');
+
+  // ── TAX PAGE ──────────────────────────────────────────────────
+  const gross=1836282,std=50000,hra=285003,hl=200000,c80=150000,nps1=50000,nps2=106400,d80=50000,ttta=10000;
+  const totD=std+hra+hl+c80+nps1+nps2+d80+ttta,taxable=gross-totD,tax=12500+(taxable-500000)*.20,cess=tax*.04,totalTax=Math.round(tax+cess),mTDS=Math.round(totalTax/12);
+  document.getElementById('tax-stats').innerHTML=`
+    <div class="card" style="padding:14px"><div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Gross income</div><div style="font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--blue);margin-top:5px">${fmt(gross)}</div></div>
+    <div class="card" style="padding:14px"><div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Deductions</div><div style="font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);margin-top:5px">${fmt(totD)}</div></div>
+    <div class="card" style="padding:14px"><div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Annual tax</div><div style="font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:5px">${fmt(totalTax)}</div></div>
+  `;
+  document.getElementById('tax-ded').innerHTML=[
+    ['Standard Deduction','None',std,'g'],
+    ['HRA — Mumbai 50% basic','Rent receipts + landlord PAN',hra,'g'],
+    ['Home Loan Interest Sec 24b','Bajaj Housing certificate',hl,'g'],
+    ['80C (PF+Principal+NPS+ELSS)','Investment proofs',c80,'g'],
+    ['80CCD(1B) Own NPS','NPS statement',nps1,'g'],
+    ['80CCD(2) Employer NPS','Form 16 from ADF',nps2,'g'],
+    ['80D Health Insurance','Premium receipts',d80,'g'],
+    ['80TTA Savings interest','Bank statement',ttta,'g'],
+  ].map(([n,p,a,c])=>`<div class="tax-row"><div><div style="font-size:12px;font-weight:500;color:var(--text)">${n}</div><div style="font-size:10px;color:var(--text3)">${p}</div></div><div style="font-family:'DM Mono',monospace;font-weight:600;color:var(--green)">−${fmt(a)}</div></div>`).join('');
+  document.getElementById('tax-sum').innerHTML=`
+    <div class="tax-row"><span style="color:var(--text2);font-size:12px">Gross income</span><span style="font-family:'DM Mono',monospace;font-weight:600">${fmt(gross)}</span></div>
+    <div class="tax-row"><span style="color:var(--text2);font-size:12px">Total deductions</span><span style="font-family:'DM Mono',monospace;font-weight:600;color:var(--green)">−${fmt(totD)}</span></div>
+    <div class="tax-row hl"><span style="font-size:12px;font-weight:600">Taxable income</span><span style="font-family:'DM Mono',monospace;font-weight:700;color:var(--amber)">${fmt(taxable)}</span></div>
+    <div class="tax-row"><span style="color:var(--text2);font-size:12px">Income tax</span><span style="font-family:'DM Mono',monospace;font-weight:600;color:var(--red)">${fmt(tax)}</span></div>
+    <div class="tax-row"><span style="color:var(--text2);font-size:12px">Health & Education cess 4%</span><span style="font-family:'DM Mono',monospace;font-weight:600;color:var(--red)">${fmt(cess)}</span></div>
+    <div class="tax-row hl"><span style="font-size:12px;font-weight:700">Total annual tax</span><span style="font-family:'DM Mono',monospace;font-weight:700;color:var(--red);font-size:15px">${fmt(totalTax)}</span></div>
+    <div class="tax-row hl"><span style="font-size:12px;font-weight:700">Monthly TDS at ADF</span><span style="font-family:'DM Mono',monospace;font-weight:700;color:var(--amber);font-size:14px">${fmt(mTDS)}/mo</span></div>
+  `;
+  document.getElementById('tax-chk').innerHTML=[
+    ['Day 1 at ADF','Declare Old Regime + submit investment declaration to HR','r'],
+    ['Day 1 at ADF','Request employer NPS 80CCD(2) — saves Rs.33,000/year','r'],
+    ['Day 1 at ADF','Inform ADF HR about Deloitte income Rs.4,36,311','r'],
+    ['Week 1','Find Mumbai flat — Rs.38-40K rent, get landlord PAN','a'],
+    ['Month 1','Buy personal health insurance (self + spouse) — 80D','a'],
+    ['Month 1','Buy term life insurance Rs.1.5-2Cr — spouse not earning','r'],
+    ['Before Jul 31, 2026','File FY 2025-26 ITR with CA — hard deadline','r'],
+    ['Apr 2027','Collect Form 16 from both Deloitte + ADF, file ITR-2','b'],
+  ].map(([w,t,c])=>`<div class="cr"><div class="cr-icon" style="background:var(--${c==='r'?'red':c==='a'?'amber':'blue'}-bg)">✓</div><div class="cr-body"><div class="cr-title">${t}</div></div><span class="badge ${c}">${w}</span></div>`).join('');
+}
+
+// CRUD
+function del(list,id){S[list]=S[list].filter(i=>i.id!==id);renderAll();}
+function delCC(id){S.cc=S.cc.filter(c=>c.id!==id);renderAll();}
+function delDue(id){S.dues=S.dues.filter(d=>d.id!==id);renderAll();}
+
+function addIncome(){
+  const n=document.getElementById('in-n').value.trim(),a=parseFloat(document.getElementById('in-a').value);
+  if(!n||!a||a<=0){alert('Please enter a name and amount');return;}
+  S.incomes.push({id:nid++,name:n,amount:a,type:document.getElementById('in-t').value});
+  document.getElementById('in-n').value='';document.getElementById('in-a').value='';renderAll();
+}
+function addEMI(){
+  const n=document.getElementById('em-n').value.trim(),a=parseFloat(document.getElementById('em-a').value);
+  if(!n||!a||a<=0){alert('Please enter name and EMI amount');return;}
+  S.emis.push({id:nid++,name:n,amount:a,due:parseInt(document.getElementById('em-d').value)||5,type:document.getElementById('em-t').value,outstanding:parseFloat(document.getElementById('em-o').value)||0,rate:parseFloat(document.getElementById('em-r').value)||0});
+  document.getElementById('em-n').value='';document.getElementById('em-a').value='';document.getElementById('em-o').value='';document.getElementById('em-r').value='';renderAll();
+}
+function addExpense(){
+  const n=document.getElementById('ex-n').value.trim(),a=parseFloat(document.getElementById('ex-a').value);
+  if(!n||!a||a<=0){alert('Please enter name and amount');return;}
+  S.expenses.push({id:nid++,name:n,amount:a,cat:document.getElementById('ex-c').value});
+  document.getElementById('ex-n').value='';document.getElementById('ex-a').value='';renderAll();
+}
+function addLoan(){
+  const n=document.getElementById('ln-n').value.trim(),a=parseFloat(document.getElementById('ln-a').value),r=parseFloat(document.getElementById('ln-r').value),t=parseInt(document.getElementById('ln-t').value);
+  if(!n||!a||!r||!t){alert('Please fill all loan details');return;}
+  const emi=calcEMI(a,r,t),tp=emi*t,ti=tp-a;
+  const cr=document.getElementById('calc-res');cr.style.display='block';
+  cr.innerHTML=`EMI: <strong>${fmt(emi)}/month</strong> · Total interest: ${fmt(ti)} · Total payable: ${fmt(tp)}`;
+  S.emis.push({id:nid++,name:n,amount:Math.round(emi),due:5,type:'Business Loan',outstanding:a,rate:r});
+  document.getElementById('ln-n').value='';document.getElementById('ln-a').value='';document.getElementById('ln-r').value='';document.getElementById('ln-t').value='';renderAll();
+}
+function addCC(){
+  const n=document.getElementById('cc-n').value.trim(),l=parseFloat(document.getElementById('cc-l').value);
+  if(!n||!l){alert('Enter card name and limit');return;}
+  S.cc.push({id:nid++,name:n,limit:l,outstanding:parseFloat(document.getElementById('cc-o').value)||0,billing:parseInt(document.getElementById('cc-b').value)||20,due:parseInt(document.getElementById('cc-d').value)||10});
+  document.getElementById('cc-n').value='';document.getElementById('cc-l').value='';document.getElementById('cc-o').value='';renderAll();
+}
+function addDue(){
+  const n=document.getElementById('du-n').value.trim(),a=parseFloat(document.getElementById('du-a').value);
+  if(!n||!a||a<=0){alert('Enter name and amount');return;}
+  S.dues.push({id:nid++,name:n,amount:a,type:document.getElementById('du-t').value,interest:document.getElementById('du-i').value==='Has interest'});
+  document.getElementById('du-n').value='';document.getElementById('du-a').value='';renderAll();
+}
+
+// Navigation
+const titles={dashboard:'Dashboard',income:'Income',emis:'EMIs',expenses:'Expenses',cc:'Credit Cards',loans:'Add Loan',dues:'Personal Dues',debt:'Total Debt',tax:'Tax Plan',profile:'My Profile'};
+function sw(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('pg-ttl').textContent=titles[id]||id;
+  renderAll();
+}
+
+
+// Profile state
+let P = {
+  name: 'Sughosh Anney',
+  initials: 'SA',
+  company: 'ADF Foods',
+  city: 'Mumbai',
+  desig: 'Assistant Manager - FP&A',
+  fy: 'FY 2026-27',
+  pan: 'CQDPA9373B',
+  regime: 'Old Regime',
+  color: '135deg,#238636,#1f6feb'
+};
+
+function previewProfile(){
+  const n=document.getElementById('prof-name').value||'User';
+  const i=(document.getElementById('prof-init').value||n.substring(0,2)).toUpperCase();
+  const c=document.getElementById('prof-company').value||'Company';
+  const ci=document.getElementById('prof-city').value||'City';
+  const fy=document.getElementById('prof-fy').value||'FY 2026-27';
+  const col=document.getElementById('prof-color').value||'135deg,#238636,#1f6feb';
+  document.getElementById('profile-avatar-preview').textContent=i;
+  document.getElementById('profile-avatar-preview').style.background=`linear-gradient(${col})`;
+  document.getElementById('profile-name-preview').textContent=n;
+  document.getElementById('profile-role-preview').textContent=`${c} · ${ci} · ${fy}`;
+}
+
+function saveProfile(){
+  P.name=document.getElementById('prof-name').value||P.name;
+  P.initials=(document.getElementById('prof-init').value||P.initials).toUpperCase().substring(0,2);
+  P.company=document.getElementById('prof-company').value||P.company;
+  P.city=document.getElementById('prof-city').value||P.city;
+  P.desig=document.getElementById('prof-desig').value||P.desig;
+  P.fy=document.getElementById('prof-fy').value||P.fy;
+  P.pan=document.getElementById('prof-pan').value||P.pan;
+  P.regime=document.getElementById('prof-regime').value||P.regime;
+  P.color=document.getElementById('prof-color').value||P.color;
+  updateProfileUI();
+  // Flash saved
+  const btn=document.querySelector('#pg-profile .btn-p');
+  btn.textContent='✅ Saved!';btn.style.background='var(--accent)';
+  setTimeout(()=>{btn.textContent='💾 Save profile';},2000);
+}
+
+function updateProfileUI(){
+  // Sidebar
+  document.getElementById('sb-avatar').textContent=P.initials;
+  document.getElementById('sb-avatar').style.background=`linear-gradient(${P.color})`;
+  document.getElementById('sb-name-disp').textContent=P.name;
+  document.getElementById('sb-role-disp').textContent=`${P.company} · ${P.city} · ${P.fy}`;
+  // Page title in browser
+  document.title=`${P.name} — Finance Manager`;
+  // Profile summary card
+  if(document.getElementById('prof-summary')){
+    const inc=totInc(),emi=totEMI(),exp=totExp(),s=surp();
+    document.getElementById('prof-summary').innerHTML=`
+      <div class="cr"><div class="cr-body"><div class="cr-title">Name</div></div><span style="font-size:12px;font-weight:600;color:var(--text)">${P.name}</span></div>
+      <div class="cr"><div class="cr-body"><div class="cr-title">Employer</div></div><span style="font-size:12px;color:var(--text2)">${P.company}</span></div>
+      <div class="cr"><div class="cr-body"><div class="cr-title">Designation</div></div><span style="font-size:12px;color:var(--text2)">${P.desig}</span></div>
+      <div class="cr"><div class="cr-body"><div class="cr-title">Location</div></div><span style="font-size:12px;color:var(--text2)">${P.city}</span></div>
+      <div class="cr"><div class="cr-body"><div class="cr-title">PAN</div></div><span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text2)">${P.pan}</span></div>
+      <div class="cr"><div class="cr-body"><div class="cr-title">Tax regime</div></div><span class="badge g">${P.regime}</span></div>
+      <div class="cr"><div class="cr-body"><div class="cr-title">Monthly income</div></div><span class="cr-val g">${fmt(inc)}</span></div>
+      <div class="cr"><div class="cr-body"><div class="cr-title">Monthly surplus</div></div><span class="cr-val ${s>=0?'g':'r'}">${fmtS(s)}</span></div>
+    `;
+  }
+}
+
+// Theme toggle
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-btn').textContent=isDark?'🌙 Dark':'☀️ Light';
+  const ptb=document.getElementById('profile-theme-btn');if(ptb)ptb.textContent=isDark?'🌙 Dark mode':'☀️ Light mode';
+}
+
+// Init date
+document.getElementById('tb-date') && (document.getElementById('tb-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'}));
+renderAll();
+</script>
+</body>
+</html>
