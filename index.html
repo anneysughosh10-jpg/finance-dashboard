@@ -475,10 +475,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 
   <!-- ── TAX PAGE ─────────────────────────────────────────── -->
   <div id="pg-tax" class="page">
-    <div class="pg-header"><div><div class="pg-title">Tax plan FY 2026-27</div><div class="pg-sub">Old Regime · ADF Foods Mumbai · Saves Rs.1,21,820 vs New Regime</div></div></div>
+    <div class="pg-header"><div><div class="pg-title">Tax plan FY 2026-27</div><div class="pg-sub" id="tax-sub">Old Regime · ADF Foods Mumbai</div></div></div>
     <div class="dash-grid" style="margin-bottom:20px" id="tax-stats"></div>
     <div class="dash-grid-2">
-      <div class="card"><div class="card-header"><span class="card-title">Deductions tracker</span><span class="badge g">Old regime</span></div><div id="tax-ded"></div></div>
+      <div class="card"><div class="card-header"><span class="card-title">Deductions tracker</span><span class="badge g" id="tax-ded-badge">Old regime</span></div><div id="tax-ded"></div></div>
       <div class="card"><div class="card-header"><span class="card-title">Tax computation</span></div><div id="tax-sum"></div></div>
     </div>
     <div class="card"><div class="card-header"><span class="card-title">Action checklist</span></div><div id="tax-chk"></div></div>
@@ -863,8 +863,38 @@ function renderAll(){
     </div>`).join('');
 
   // ── TAX PAGE ──────────────────────────────────────────────────
-  const gross=1836282,std=50000,hra=285003,hl=200000,c80=150000,nps1=50000,nps2=106400,d80=50000,ttta=10000;
-  const totD=std+hra+hl+c80+nps1+nps2+d80+ttta,taxable=gross-totD,tax=12500+(taxable-500000)*.20,cess=tax*.04,totalTax=Math.round(tax+cess),mTDS=Math.round(totalTax/12);
+  const gross=1836282;
+  const regime=(typeof P!=='undefined'&&P.regime)?P.regime:'Old Regime';
+  const isNew=regime==='New Regime';
+  // New regime allows only Standard Deduction + Employer NPS 80CCD(2); all other deductions are Old-regime only
+  const std=isNew?75000:50000;
+  const hra=isNew?0:285003;
+  const hl=isNew?0:200000;
+  const c80=isNew?0:150000;
+  const nps1=isNew?0:50000;
+  const nps2=106400;
+  const d80=isNew?0:50000;
+  const ttta=isNew?0:10000;
+  const totD=std+hra+hl+c80+nps1+nps2+d80+ttta;
+  const taxable=Math.max(0,gross-totD);
+  // Slab tax: nw=true uses New Regime FY 2025-26 slabs (latest enacted), else Old Regime
+  const slabTax=(ti,nw)=>{
+    if(nw){
+      if(ti<=1200000)return 0; // 87A rebate: new regime, taxable up to 12L
+      const b=[[400000,0],[800000,.05],[1200000,.10],[1600000,.15],[2000000,.20],[2400000,.25],[Infinity,.30]];
+      let t=0,p=0;for(const[c,r]of b){if(ti>p){t+=(Math.min(ti,c)-p)*r;p=c;}else break;}return t;
+    }
+    if(ti<=500000)return 0; // 87A rebate: old regime, taxable up to 5L
+    if(ti<=1000000)return 12500+(ti-500000)*.20;
+    return 112500+(ti-1000000)*.30;
+  };
+  const tax=slabTax(taxable,isNew),cess=tax*.04,totalTax=Math.round(tax+cess),mTDS=Math.round(totalTax/12);
+  // Compare both regimes for the subtitle so it always shows which one is cheaper
+  const oldTax=Math.round(slabTax(Math.max(0,gross-(50000+285003+200000+150000+50000+106400+50000+10000)),false)*1.04);
+  const newTax=Math.round(slabTax(Math.max(0,gross-(75000+106400)),true)*1.04);
+  const cheaper=oldTax<=newTax?'Old Regime':'New Regime',diff=Math.abs(oldTax-newTax);
+  const _ts=document.getElementById('tax-sub');if(_ts)_ts.textContent=`${regime} · ADF Foods Mumbai · ${cheaper} saves ${fmt(diff)}/yr`;
+  const _tb=document.getElementById('tax-ded-badge');if(_tb)_tb.textContent=isNew?'New regime':'Old regime';
   document.getElementById('tax-stats').innerHTML=`
     <div class="card" style="padding:14px"><div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Gross income</div><div style="font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--blue);margin-top:5px">${fmt(gross)}</div></div>
     <div class="card" style="padding:14px"><div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Deductions</div><div style="font-size:20px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);margin-top:5px">${fmt(totD)}</div></div>
@@ -994,7 +1024,7 @@ function saveProfile(){
   P.pan=document.getElementById('prof-pan').value||P.pan;
   P.regime=document.getElementById('prof-regime').value||P.regime;
   P.color=document.getElementById('prof-color').value||P.color;
-  updateProfileUI();
+  renderAll();
   // Flash saved
   const btn=document.querySelector('#pg-profile .btn-p');
   btn.textContent='✅ Saved!';btn.style.background='var(--accent)';
