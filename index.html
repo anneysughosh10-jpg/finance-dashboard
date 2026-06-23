@@ -184,9 +184,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media(max-width:768px){
   .app{flex-direction:row;height:100vh;overflow:hidden}
-  .sidebar{position:fixed;top:0;left:0;height:100vh;width:84vw;max-width:300px;z-index:999;box-shadow:4px 0 24px rgba(0,0,0,.3)}
+  /* sidebar scrolls as ONE piece so the surplus box at the bottom is always reachable */
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:84vw;max-width:300px;z-index:999;box-shadow:4px 0 24px rgba(0,0,0,.3);overflow-y:auto;-webkit-overflow-scrolling:touch}
   .sidebar.collapsed{margin-left:-84vw}
-  .sb-nav{display:block;padding:10px 8px}
+  .sb-nav{display:block;padding:10px 8px;flex:0 0 auto}
+  .sb-surplus{flex:0 0 auto;margin-bottom:24px}
   .ni{width:100%;padding:10px 12px;font-size:13px}
   .content{height:100vh;overflow:hidden;flex:1;min-width:0}
   .main{overflow-y:auto;overflow-x:hidden;padding:14px}
@@ -213,6 +215,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
   .pg-header{flex-wrap:wrap;gap:8px}
   body,html{overflow-x:hidden;max-width:100vw}
   .card,.fc{overflow:hidden;max-width:100%}
+  /* Profile: stack avatar above name, center it, give breathing room */
+  .profile-avatar-row{flex-direction:column;text-align:center;gap:10px}
+  .profile-avatar-row > div:last-child{width:100%}
+  #profile-name-preview{font-size:18px}
+  /* Profile form fields: full width, comfortable spacing */
+  .fc .fg,.fc .fg3{gap:12px}
+  .fgrp input,.fgrp select{padding:11px 12px;font-size:14px}
+  .fgrp label{font-size:11px}
+  .nw-subgrid{gap:8px}
+  .nw-subgrid [style*="font-size:18px"]{font-size:15px !important;word-break:break-all}
   /* the big net-worth / debt hero numbers */
   .debt-hero{padding:16px}
   .debt-hero [style*="font-size:34px"]{font-size:21px !important}
@@ -541,7 +553,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <div style="font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.07em">Grand total outstanding</div>
       <div style="font-size:34px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:6px" id="grand-total">—</div>
       <div style="font-size:11px;color:var(--text3);margin-top:4px">Closing cost with penalties: <strong style="color:var(--text2)">Rs.1,28,34,055</strong></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px" id="debt-cats"></div>
+      <div class="debt-cats-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px" id="debt-cats"></div>
     </div>
     <div class="card" style="margin-bottom:16px">
       <div class="card-header"><span class="card-title">Complete debt breakdown</span></div>
@@ -616,7 +628,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <div style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.07em">Current net worth</div>
       <div style="font-size:34px;font-weight:700;font-family:'DM Mono',monospace;margin-top:6px" id="nw-page-val">—</div>
       <div style="font-size:11px;color:var(--text3);margin-top:4px" id="nw-page-sub">—</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+      <div class="nw-subgrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
         <div style="background:var(--bg3);border:1px solid var(--green-b);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Total assets</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);margin-top:4px" id="nw-page-assets">—</div></div>
         <div style="background:var(--bg3);border:1px solid var(--red-b);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Total debt</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:4px" id="nw-page-debt">—</div></div>
       </div>
@@ -653,10 +665,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
   <!-- ── PROFILE PAGE ─────────────────────────────────────────── -->
   <div id="pg-profile" class="page">
     <div class="pg-header"><div><div class="pg-title">My Profile</div><div class="pg-sub">Your details — updates reflect everywhere in the app</div></div></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="profile-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div>
         <div class="fc">
-          <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+          <div class="profile-avatar-row" style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
             <div id="profile-avatar-preview" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#238636,#1f6feb);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">SA</div>
             <div>
               <div id="profile-name-preview" style="font-size:16px;font-weight:700;color:var(--text)">Sughosh Anney</div>
