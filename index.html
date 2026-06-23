@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,16 +20,17 @@
   --card-shadow:0 1px 3px rgba(0,0,0,.4);
 }
 [data-theme="light"]{
-  --bg:#f0f2f5; --bg2:#ffffff; --bg3:#f6f8fa; --bg4:#eaeef2; --bg5:#d0d7de;
-  --text:#1f2328; --text2:#636c76; --text3:#9aa3ad; --text4:#adb5bd;
-  --border:#d0d7de; --border2:#eaeef2;
-  --green:#1a7f37; --green-bg:rgba(26,127,55,.1); --green-b:rgba(26,127,55,.3);
-  --red:#cf222e; --red-bg:rgba(207,34,46,.1); --red-b:rgba(207,34,46,.3);
-  --amber:#9a6700; --amber-bg:rgba(154,103,0,.1); --amber-b:rgba(154,103,0,.3);
-  --blue:#0969da; --blue-bg:rgba(9,105,218,.1); --blue-b:rgba(9,105,218,.3);
-  --purple:#8250df; --purple-bg:rgba(130,80,223,.1); --purple-b:rgba(130,80,223,.3);
-  --accent:#1a7f37; --accent2:#0969da;
-  --card-shadow:0 1px 3px rgba(0,0,0,.08);
+  /* Warm cream palette — easy on the eyes, not stark white */
+  --bg:#f4efe6; --bg2:#fdfaf3; --bg3:#f0e9da; --bg4:#e8dfcc; --bg5:#d8cdb5;
+  --text:#3a3327; --text2:#6b6253; --text3:#9c917e; --text4:#b3a892;
+  --border:#e2d8c4; --border2:#ede5d5;
+  --green:#2f7d32; --green-bg:rgba(47,125,50,.1); --green-b:rgba(47,125,50,.28);
+  --red:#c0392b; --red-bg:rgba(192,57,43,.1); --red-b:rgba(192,57,43,.28);
+  --amber:#9a6700; --amber-bg:rgba(154,103,0,.1); --amber-b:rgba(154,103,0,.28);
+  --blue:#1565c0; --blue-bg:rgba(21,101,192,.1); --blue-b:rgba(21,101,192,.28);
+  --purple:#7e4cc4; --purple-bg:rgba(126,76,196,.1); --purple-b:rgba(126,76,196,.28);
+  --accent:#2f7d32; --accent2:#1565c0;
+  --card-shadow:0 1px 3px rgba(120,100,60,.1);
 }
 /* ── RESET ─────────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -143,7 +144,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .prog-track{background:var(--bg4);border-radius:4px;height:6px;overflow:hidden}
 .prog-fill{height:6px;border-radius:4px;transition:width .6s}
 /* ── SUGGEST BOX ─────────────────────────────────────────────────────────── */
-.suggest{background:linear-gradient(135deg,#1a2a1a,#1a1f2e);border:1px solid var(--green-b);border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.suggest{background:var(--green-bg);border:1px solid var(--green-b);border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.sug-body{color:var(--text2)}
 .sug-icon{font-size:16px;margin-bottom:6px}
 .sug-title{font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
 .sug-body{font-size:12px;color:var(--text2);line-height:1.6}
@@ -182,30 +184,46 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media(max-width:768px){
   .app{flex-direction:row;height:100vh;overflow:hidden}
-  .sidebar{position:fixed;top:0;left:0;height:100vh;width:260px;z-index:999;box-shadow:4px 0 24px rgba(0,0,0,.3)}
-  .sidebar.collapsed{margin-left:-260px}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:84vw;max-width:300px;z-index:999;box-shadow:4px 0 24px rgba(0,0,0,.3)}
+  .sidebar.collapsed{margin-left:-84vw}
   .sb-nav{display:block;padding:10px 8px}
-  .ni{width:100%;padding:9px 10px}
-  .content{height:100vh;overflow:hidden;flex:1}
-  .main{overflow-y:auto;padding:14px}
-  .hero,.dash-grid,.dash-grid-2,.fg,.fg3,.profile-grid{grid-template-columns:1fr !important}
-  .debt-cats-grid{grid-template-columns:1fr 1fr !important}
+  .ni{width:100%;padding:10px 12px;font-size:13px}
+  .content{height:100vh;overflow:hidden;flex:1;min-width:0}
+  .main{overflow-y:auto;overflow-x:hidden;padding:14px}
+  /* every multi-column grid collapses to one column */
+  .hero,.dash-grid,.dash-grid-2,.fg,.fg3,.profile-grid,.debt-cats-grid{grid-template-columns:1fr !important}
+  /* topbar wraps cleanly */
   .topbar{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px}
   .tb-right{flex-wrap:wrap;gap:6px}
   .tb-pill{font-size:10px;padding:4px 9px}
   .theme-btn{font-size:10px;padding:4px 9px}
-  .hero-amount{font-size:26px}
-  .cr{padding:9px 12px}
-  .cr-title{white-space:normal}
+  /* big numbers must shrink + wrap so they never overflow */
+  .hero-amount{font-size:24px;word-break:break-all}
+  [style*="font-size:34px"]{font-size:22px !important;word-break:break-all}
+  [style*="font-size:32px"]{font-size:22px !important;word-break:break-all}
+  [style*="font-size:28px"]{font-size:20px !important;word-break:break-all}
+  /* card rows: allow wrap, keep value from clipping */
+  .cr{padding:9px 12px;gap:8px;flex-wrap:wrap}
+  .cr-body{min-width:0;flex:1 1 60%}
+  .cr-title{white-space:normal;word-break:break-word}
+  .cr-val{font-size:12px;white-space:nowrap}
   .tax-row{padding:8px 12px;flex-wrap:wrap;gap:4px}
   .card-header{padding:12px 14px 8px;flex-wrap:wrap;gap:6px}
   .pg-title{font-size:17px}
-  body{overflow-x:hidden}
-  .card,.fc{overflow:hidden}
+  .pg-header{flex-wrap:wrap;gap:8px}
+  body,html{overflow-x:hidden;max-width:100vw}
+  .card,.fc{overflow:hidden;max-width:100%}
+  /* the big net-worth / debt hero numbers */
+  .debt-hero{padding:16px}
+  .debt-hero [style*="font-size:34px"]{font-size:21px !important}
+  /* asset/debt value cells inside grids */
+  .debt-cats-grid > div [style*="font-size:18px"],.debt-cats-grid > div [style*="font-size:16px"]{font-size:15px !important;word-break:break-all}
 }
 @media(max-width:420px){
-  .debt-cats-grid{grid-template-columns:1fr !important}
-  .hero-amount{font-size:24px}
+  .hero-amount{font-size:21px}
+  .ni{font-size:12px}
+  .tb-pill{font-size:9px;padding:3px 7px}
+  [style*="font-size:34px"]{font-size:19px !important}
 }
 </style>
 </head>
@@ -1530,18 +1548,26 @@ window.addEventListener('resize',function(){
 });
 
 // Theme toggle
+function applyThemeLabels(){
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  // Button shows the theme you'll switch TO
+  const tb=document.getElementById('theme-btn');if(tb)tb.textContent=isDark?'☀️ Light':'🌙 Dark';
+  const ptb=document.getElementById('profile-theme-btn');if(ptb)ptb.textContent=isDark?'☀️ Light mode':'🌙 Dark mode';
+}
 function toggleTheme(){
   const html=document.documentElement;
   const isDark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',isDark?'light':'dark');
-  document.getElementById('theme-btn').textContent=isDark?'🌙 Dark':'☀️ Light';
-  const ptb=document.getElementById('profile-theme-btn');if(ptb)ptb.textContent=isDark?'🌙 Dark mode':'☀️ Light mode';
+  applyThemeLabels();
 }
+// Always start in LIGHT on every refresh (per preference)
+document.documentElement.setAttribute('data-theme','light');
 
 // Init date
 document.getElementById('tb-date') && (document.getElementById('tb-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'}));
 renderAll();
 initSidebar();
+applyThemeLabels();
 </script>
 </body>
 </html>
