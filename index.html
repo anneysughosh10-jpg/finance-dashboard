@@ -294,11 +294,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile
     </button>
   </nav>
-  <div class="sb-surplus">
-    <div class="ss-label">Monthly surplus</div>
-    <div class="ss-val" id="sb-val" style="color:var(--green)">...</div>
-    <div class="ss-sub" id="sb-sub">of Rs.2,10,110 income</div>
-  </div>
 </aside>
 
 <!-- ── CONTENT ──────────────────────────────────────────────────────── -->
@@ -947,7 +942,7 @@ function renderAll(){
 
   // Topbar + sidebar
   const sbv=document.getElementById('sb-val');
-  sbv.textContent=fmtS(s); sbv.style.color=s>=0?'var(--green)':'var(--red)';
+  if(sbv){ sbv.textContent=fmtS(s); sbv.style.color=s>=0?'var(--green)':'var(--red)'; }
   document.getElementById('r-val').textContent=r+'%';
   document.getElementById('r-dot').style.background=r>80?'var(--red)':r>50?'var(--amber)':'var(--green)';
   document.getElementById('tb-debt').textContent=fmt(td);
