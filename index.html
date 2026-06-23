@@ -33,7 +33,7 @@
 }
 /* ── RESET ─────────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;max-width:100%;overflow-x:hidden}
+html,body{height:100%}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;transition:background .2s,color .2s}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -62,12 +62,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .ss-sub{font-size:10px;color:var(--text3);margin-top:2px}
 /* ── TOPBAR ─────────────────────────────────────────────────────────────── */
 .tb-left{display:flex;align-items:center;gap:12px}
+.tb-title{font-size:15px;font-weight:600;color:var(--text)}
 .hamburger{background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);flex-shrink:0;transition:all .15s}
 .hamburger:hover{background:var(--bg4)}
 .hamburger svg{width:18px;height:18px}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998}
 .sidebar-overlay.show{display:block}
-.tb-title{font-size:15px;font-weight:600;color:var(--text)}
 .tb-right{display:flex;align-items:center;gap:10px}
 .tb-pill{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--text2)}
 .tb-dot{width:6px;height:6px;border-radius:50%}
@@ -188,33 +188,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
   .ni{width:100%;padding:9px 10px}
   .content{height:100vh;overflow:hidden;flex:1}
   .main{overflow-y:auto;padding:14px}
-  /* Force ALL grids to single column on mobile */
   .hero,.dash-grid,.dash-grid-2,.fg,.fg3,.profile-grid{grid-template-columns:1fr !important}
   .debt-cats-grid{grid-template-columns:1fr 1fr !important}
-  /* Topbar: let it wrap, shrink pills */
   .topbar{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px}
   .tb-right{flex-wrap:wrap;gap:6px}
   .tb-pill{font-size:10px;padding:4px 9px}
   .theme-btn{font-size:10px;padding:4px 9px}
-  /* Hero amounts smaller so they fit */
   .hero-amount{font-size:26px}
-  .hs-val{font-size:20px}
-  /* Tables/cards: prevent text overflow */
   .cr{padding:9px 12px}
   .cr-title{white-space:normal}
   .tax-row{padding:8px 12px;flex-wrap:wrap;gap:4px}
   .card-header{padding:12px 14px 8px;flex-wrap:wrap;gap:6px}
-  /* Page titles smaller */
   .pg-title{font-size:17px}
-  /* Make sure nothing overflows horizontally */
   body{overflow-x:hidden}
   .card,.fc{overflow:hidden}
 }
 @media(max-width:420px){
-  .ni{flex:1 1 100%}
   .debt-cats-grid{grid-template-columns:1fr !important}
   .hero-amount{font-size:24px}
-  .due-chips{padding:12px 14px}
 }
 </style>
 </head>
@@ -256,6 +247,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
     </button>
     <button class="ni" onclick="sw('debt',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Total Debt
+    </button>
+    <div class="sb-section">Wealth</div>
+    <button class="ni" onclick="sw('networth',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>Net Worth
+    </button>
+    <button class="ni" onclick="sw('goals',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals
     </button>
     <div class="sb-section">Planning</div>
     <button class="ni" onclick="sw('tax',this)">
@@ -368,6 +366,32 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
         <div class="card-body" id="cc-mini"></div>
         <div style="padding:10px 18px;border-top:1px solid var(--border2);font-size:11px;color:var(--text3)">Monthly payment: <strong style="color:var(--red)" id="cc-monthly-pay">Rs.14,718</strong></div>
       </div>
+    </div>
+
+    <!-- Net Worth + Debt-Free Timeline -->
+    <div class="dash-grid-2">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Net worth</span><span class="card-badge badge b">assets − debt</span></div>
+        <div style="padding:18px">
+          <div style="font-size:28px;font-weight:700;font-family:'DM Mono',monospace" id="nw-val">—</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">grows as you pay down debt & build assets</div>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+            <div class="prog"><div class="prog-top"><span>Assets</span><span style="font-family:'DM Mono',monospace;color:var(--green)" id="nw-assets">—</span></div><div class="prog-track"><div class="prog-fill" id="nw-assets-bar" style="background:var(--green)"></div></div></div>
+            <div class="prog"><div class="prog-top"><span>Total debt</span><span style="font-family:'DM Mono',monospace;color:var(--red)" id="nw-debt">—</span></div><div class="prog-track"><div class="prog-fill" id="nw-debt-bar" style="background:var(--red)"></div></div></div>
+          </div>
+          <div style="margin-top:6px;font-size:10px;color:var(--text4)">Edit assets in the Net Worth tab</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Debt-free timeline</span><span class="card-badge badge b">projection</span></div>
+        <div style="padding:18px" id="dft-body"></div>
+      </div>
+    </div>
+
+    <!-- Savings Goals -->
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-header"><span class="card-title">Savings goals</span><span class="card-badge badge p">progress</span></div>
+      <div style="padding:14px 18px" id="goals-mini"></div>
     </div>
   </div>
 
@@ -499,7 +523,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <div style="font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.07em">Grand total outstanding</div>
       <div style="font-size:34px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:6px" id="grand-total">—</div>
       <div style="font-size:11px;color:var(--text3);margin-top:4px">Closing cost with penalties: <strong style="color:var(--text2)">Rs.1,28,34,055</strong></div>
-      <div class="debt-cats-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px" id="debt-cats"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px" id="debt-cats"></div>
     </div>
     <div class="card" style="margin-bottom:16px">
       <div class="card-header"><span class="card-title">Complete debt breakdown</span></div>
@@ -509,24 +533,109 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <div class="card-header"><span class="card-title">Payoff strategy</span><span class="badge g">avalanche method</span></div>
       <div id="payoff-rows"></div>
     </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><span class="card-title">What-if: lump sum simulator</span><span class="card-badge badge p">try a scenario</span></div>
+      <div style="padding:16px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:12px">Got a bonus, gift or windfall? Enter the amount to see exactly which debts you could clear (highest interest first) and how much monthly EMI you'd free up.</div>
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+          <div class="fgrp" style="flex:1;min-width:180px"><label>Lump sum available (Rs.)</label><input type="number" id="whatif-amt" placeholder="e.g. 124351" oninput="runWhatIf()"></div>
+          <button class="btn-p" style="margin-top:0;width:auto;padding:9px 20px" onclick="runWhatIf()">Simulate</button>
+        </div>
+        <div id="whatif-result" style="margin-top:14px"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ── TAX PAGE ─────────────────────────────────────────── -->
   <div id="pg-tax" class="page">
     <div class="pg-header"><div><div class="pg-title">Tax plan FY 2026-27</div><div class="pg-sub" id="tax-sub">Old Regime · ADF Foods Mumbai</div></div></div>
     <div class="dash-grid" style="margin-bottom:20px" id="tax-stats"></div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header"><span class="card-title">Tax calculator — edit your numbers</span><span class="card-badge badge b">live</span></div>
+      <div style="padding:16px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:12px">Enter the figures from your Form 16 / payslips. Tax recalculates instantly. Switch regime in your Profile.</div>
+        <div class="fg3">
+          <div class="fgrp"><label>Gross annual income</label><input type="number" id="t-gross" oninput="updateTax()"></div>
+          <div class="fgrp"><label>HRA exemption</label><input type="number" id="t-hra" oninput="updateTax()"></div>
+          <div class="fgrp"><label>Home loan interest (24b)</label><input type="number" id="t-hl" oninput="updateTax()"></div>
+        </div>
+        <div class="fg3" style="margin-top:10px">
+          <div class="fgrp"><label>80C investments</label><input type="number" id="t-c80" oninput="updateTax()"></div>
+          <div class="fgrp"><label>80CCD(1B) own NPS</label><input type="number" id="t-nps1" oninput="updateTax()"></div>
+          <div class="fgrp"><label>80CCD(2) employer NPS</label><input type="number" id="t-nps2" oninput="updateTax()"></div>
+        </div>
+        <div class="fg3" style="margin-top:10px">
+          <div class="fgrp"><label>80D health insurance</label><input type="number" id="t-d80" oninput="updateTax()"></div>
+          <div class="fgrp"><label>80TTA savings interest</label><input type="number" id="t-tta" oninput="updateTax()"></div>
+          <div class="fgrp" style="justify-content:flex-end"><button class="btn-p" style="margin-top:0" onclick="resetTax()">Reset to my figures</button></div>
+        </div>
+      </div>
+    </div>
     <div class="dash-grid-2">
       <div class="card"><div class="card-header"><span class="card-title">Deductions tracker</span><span class="badge g" id="tax-ded-badge">Old regime</span></div><div id="tax-ded"></div></div>
       <div class="card"><div class="card-header"><span class="card-title">Tax computation</span></div><div id="tax-sum"></div></div>
     </div>
-    <div class="card"><div class="card-header"><span class="card-title">Action checklist</span></div><div id="tax-chk"></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Action checklist</span><span class="card-badge badge g" id="chk-progress">—</span></div>
+      <div id="tax-chk"></div>
+      <div style="padding:14px 18px;border-top:1px solid var(--border2)">
+        <div class="fg3">
+          <div class="fgrp" style="grid-column:span 1"><label>New task</label><input id="chk-text" placeholder="e.g. Update KYC at bank"></div>
+          <div class="fgrp"><label>Tag / timing</label><input id="chk-tag" placeholder="e.g. This week"></div>
+          <div class="fgrp"><label>Priority</label><select id="chk-pri"><option value="r">High</option><option value="a">Medium</option><option value="b">Low</option></select></div>
+        </div>
+        <button class="btn-p" onclick="addChk()">+ Add task</button>
+      </div>
+    </div>
   </div>
 
+
+  <!-- ── NET WORTH PAGE ─────────────────────────────────────────── -->
+  <div id="pg-networth" class="page">
+    <div class="pg-header"><div><div class="pg-title">Net worth</div><div class="pg-sub">Your assets minus your total debt — the number that matters most</div></div></div>
+    <div class="debt-hero" style="border-color:var(--green-b)">
+      <div style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.07em">Current net worth</div>
+      <div style="font-size:34px;font-weight:700;font-family:'DM Mono',monospace;margin-top:6px" id="nw-page-val">—</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px" id="nw-page-sub">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+        <div style="background:var(--bg3);border:1px solid var(--green-b);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Total assets</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);margin-top:4px" id="nw-page-assets">—</div></div>
+        <div style="background:var(--bg3);border:1px solid var(--red-b);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Total debt</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:4px" id="nw-page-debt">—</div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:14px"><div class="card-header"><span class="card-title">Your assets</span></div><div id="assets-list"></div></div>
+    <div class="st">Add asset</div>
+    <div class="fc">
+      <div class="fg">
+        <div class="fgrp"><label>Asset name</label><input id="as-n" placeholder="e.g. Fixed Deposit"></div>
+        <div class="fgrp"><label>Current value (Rs.)</label><input id="as-v" type="number"></div>
+      </div>
+      <div class="fgrp" style="margin-top:10px"><label>Type</label>
+        <select id="as-t"><option>Property</option><option>Cash</option><option>Investment</option><option>Retirement</option><option>Gold</option><option>Vehicle</option><option>Other</option></select>
+      </div>
+      <button class="btn-p" onclick="addAsset()">+ Add asset</button>
+    </div>
+  </div>
+
+  <!-- ── GOALS PAGE ─────────────────────────────────────────── -->
+  <div id="pg-goals" class="page">
+    <div class="pg-header"><div><div class="pg-title">Savings goals</div><div class="pg-sub">Track progress toward what matters — update saved amounts anytime</div></div></div>
+    <div class="card" style="margin-bottom:14px"><div id="goals-full"></div></div>
+    <div class="st">Add a goal</div>
+    <div class="fc">
+      <div class="fg3">
+        <div class="fgrp"><label>Goal name</label><input id="go-n" placeholder="e.g. New laptop"></div>
+        <div class="fgrp"><label>Target amount (Rs.)</label><input id="go-t" type="number"></div>
+        <div class="fgrp"><label>Already saved (Rs.)</label><input id="go-s" type="number" placeholder="0"></div>
+      </div>
+      <button class="btn-p" onclick="addGoal()">+ Add goal</button>
+    </div>
+  </div>
 
   <!-- ── PROFILE PAGE ─────────────────────────────────────────── -->
   <div id="pg-profile" class="page">
     <div class="pg-header"><div><div class="pg-title">My Profile</div><div class="pg-sub">Your details — updates reflect everywhere in the app</div></div></div>
-    <div class="profile-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div>
         <div class="fc">
           <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
@@ -591,8 +700,20 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
             <span class="badge g">Rs. INR</span>
           </div>
           <div class="cr">
-            <div class="cr-body"><div class="cr-title">Data</div><div class="cr-sub">All data stored in browser memory</div></div>
-            <span class="badge b">Local</span>
+            <div class="cr-body"><div class="cr-title">Auto-save</div><div class="cr-sub">Your data saves automatically on this device</div></div>
+            <span class="badge g">On</span>
+          </div>
+          <div class="cr">
+            <div class="cr-body"><div class="cr-title">Backup to file</div><div class="cr-sub">Download a backup to move between phone & laptop</div></div>
+            <button class="theme-btn" onclick="exportData()" style="padding:6px 14px">⬇ Export</button>
+          </div>
+          <div class="cr">
+            <div class="cr-body"><div class="cr-title">Restore from file</div><div class="cr-sub">Load a backup you previously exported</div></div>
+            <label class="theme-btn" style="padding:6px 14px;cursor:pointer">⬆ Import<input type="file" accept="application/json" onchange="importData(event)" style="display:none"></label>
+          </div>
+          <div class="cr">
+            <div class="cr-body"><div class="cr-title">Reset all data</div><div class="cr-sub">Restore original starting figures</div></div>
+            <button class="theme-btn" onclick="resetData()" style="padding:6px 14px;color:var(--red)">↺ Reset</button>
           </div>
         </div>
       </div>
@@ -609,7 +730,7 @@ const fmtS=n=>(n>=0?'+Rs.':'-Rs.')+Math.abs(Math.round(n)).toLocaleString('en-IN
 const calcEMI=(p,r,n)=>{const m=r/(12*100);return m===0?p/n:p*m*Math.pow(1+m,n)/(Math.pow(1+m,n)-1);};
 let nid=300;
 
-const S={
+const DEFAULT_S={
   incomes:[
     {id:1,name:'ADF Foods Net Salary',amount:136110,type:'Salary'},
     {id:2,name:"Brother's Contribution",amount:44000,type:'Family support'},
@@ -660,8 +781,68 @@ const S={
     {id:12,name:'Neighbours',amount:3000,type:'Other',interest:false},
     {id:13,name:'Sanjay',amount:2500,type:'Friend',interest:false},
     {id:14,name:"Mama's Amount",amount:385000,type:'Family',interest:false},
+  ],
+  assets:[
+    {id:1,name:'Home (property value)',value:8500000,type:'Property'},
+    {id:2,name:'NPS balance',value:50000,type:'Retirement'},
+    {id:3,name:'Motilal Oswal Mutual Fund',value:60923,type:'Investment'},
+    {id:4,name:'Bank savings',value:50000,type:'Cash'},
+  ],
+  goals:[
+    {id:1,name:'Emergency fund (3 months)',target:108000,saved:0},
+    {id:2,name:'Term life insurance bought',target:15000,saved:0},
+    {id:3,name:'Clear all credit cards',target:586944,saved:0},
+  ],
+  tax:{ gross:1836282, hra:285003, homeLoanInt:200000, c80:150000, nps1b:50000, npsEmp:106400, d80:50000, tta:10000 },
+  checklist:[
+    {id:1,text:'Declare tax regime + submit investment declaration to HR',tag:'Day 1 at ADF',pri:'r',done:false},
+    {id:2,text:'Request employer NPS 80CCD(2) contribution',tag:'Day 1 at ADF',pri:'r',done:false},
+    {id:3,text:'Inform ADF HR about previous Deloitte income',tag:'Day 1 at ADF',pri:'r',done:false},
+    {id:4,text:'Find Mumbai flat — get rent agreement & landlord PAN',tag:'Week 1',pri:'a',done:false},
+    {id:5,text:'Buy personal health insurance (self + spouse) — 80D',tag:'Month 1',pri:'a',done:false},
+    {id:6,text:'Buy term life insurance — spouse not earning',tag:'Month 1',pri:'r',done:false},
+    {id:7,text:'File FY 2025-26 ITR with CA — hard deadline',tag:'Before Jul 31, 2026',pri:'r',done:false},
+    {id:8,text:'Collect Form 16 from both employers, file ITR-2',tag:'Apr 2027',pri:'b',done:false},
   ]
 };
+
+// ── DATA PERSISTENCE (localStorage) ──────────────────────────────────
+const STORAGE_KEY='sughosh_finance_v1';
+let P_DEFAULT={name:'Sughosh Anney',initials:'SA',company:'ADF Foods',city:'Mumbai',desig:'Assistant Manager - FP&A',fy:'FY 2026-27',pan:'CQDPA9373B',regime:'Old Regime',color:'135deg,#238636,#1f6feb'};
+let S, P;
+function loadData(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const saved=JSON.parse(raw);
+      S=saved.S||JSON.parse(JSON.stringify(DEFAULT_S));
+      P=Object.assign({},P_DEFAULT,saved.P||{});
+      // make sure all arrays exist (in case of older saves)
+      ['incomes','emis','expenses','cc','dues','assets','goals'].forEach(k=>{ if(!S[k])S[k]=JSON.parse(JSON.stringify(DEFAULT_S[k]||[])); });
+      if(!S.tax)S.tax=JSON.parse(JSON.stringify(DEFAULT_S.tax));
+      if(!S.checklist)S.checklist=JSON.parse(JSON.stringify(DEFAULT_S.checklist));
+      nid=saved.nid||500;
+      return;
+    }
+  }catch(e){ console.warn('Load failed, using defaults',e); }
+  S=JSON.parse(JSON.stringify(DEFAULT_S));
+  P=Object.assign({},P_DEFAULT);
+}
+function saveData(){
+  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify({S:S,P:P,nid:nid})); }
+  catch(e){ console.warn('Save failed',e); }
+}
+function resetData(){
+  if(confirm('Reset ALL data back to the original starting values? This cannot be undone.')){
+    localStorage.removeItem(STORAGE_KEY);
+    S=JSON.parse(JSON.stringify(DEFAULT_S));
+    P=Object.assign({},P_DEFAULT);
+    nid=500;
+    renderAll();
+    alert('Data reset to defaults.');
+  }
+}
+loadData();
 
 const totInc=()=>S.incomes.reduce((s,i)=>s+i.amount,0);
 const totEMI=()=>S.emis.reduce((s,e)=>s+e.amount,0);
@@ -672,6 +853,24 @@ const totDues=()=>S.dues.reduce((s,d)=>s+d.amount,0);
 const totCC=()=>S.cc.reduce((s,c)=>s+c.outstanding,0);
 const formalDebt=()=>S.emis.reduce((s,e)=>s+e.outstanding,0);
 const grandDebt=()=>formalDebt()+totDues();
+const totAssets=()=>S.assets.reduce((s,a)=>s+a.value,0);
+const netWorth=()=>totAssets()-grandDebt();
+function debtFreeMonths(){
+  const s=surp();
+  if(s<=0) return null;
+  let loans=S.emis.filter(e=>e.type!=='Home Loan').map(e=>({...e,bal:e.outstanding}));
+  if(loans.length===0) return 0;
+  let months=0, extra=s, guard=0;
+  while(loans.some(l=>l.bal>0) && guard<600){
+    guard++;
+    loans.forEach(l=>{ if(l.bal>0){ l.bal+=l.bal*(l.rate/100/12); l.bal-=l.amount; if(l.bal<0)l.bal=0; } });
+    let pool=extra;
+    const sorted=loans.filter(l=>l.bal>0).sort((a,b)=>b.rate-a.rate);
+    for(const l of sorted){ if(pool<=0)break; const pay=Math.min(pool,l.bal); l.bal-=pay; pool-=pay; }
+    months++;
+  }
+  return months;
+}
 
 const typeCol={'Home Loan':'#58a6ff','Personal Loan':'#f85149','Credit Card':'#da3633','Gold Loan':'#d29922','Vehicle Loan':'#3fb950','Business Loan':'#bc8cff','Other':'#8b949e'};
 const typeIcon={'Home Loan':'🏠','Personal Loan':'💳','Credit Card':'💳','Gold Loan':'🥇','Vehicle Loan':'🛵','Business Loan':'💼','Other':'📋'};
@@ -687,40 +886,25 @@ function getDue(day){
 function getSug(){
   // Fully data-driven recommendation engine. Reads live values only.
   const s=surp(), r=emiRatio(), inc=totInc(), emi=totEMI(), exp=totExp();
-  // Rank consumer (non-home) loans by interest rate, highest first
   const consumer=[...S.emis].filter(e=>e.type!=='Home Loan').sort((a,b)=>b.rate-a.rate);
   const top=consumer[0];
-  // Smallest-balance consumer loans (snowball candidates)
   const small=[...consumer].sort((a,b)=>a.outstanding-b.outstanding).slice(0,2);
-  // Months of surplus needed to clear the smallest loan
   const months = (top && s>0) ? Math.ceil(small[0].outstanding/s) : 0;
-
-  // ── Case 1: Deficit ──
   if(s<0){
     const gap=fmt(Math.abs(s));
     const biggestExp=[...S.expenses].sort((a,b)=>b.amount-a.amount)[0];
     return `Your outflow exceeds income by ${gap} this month. The fastest levers are increasing income or trimming your largest discretionary cost (${biggestExp?biggestExp.name+' at '+fmt(biggestExp.amount):'expenses'}). Until the gap closes, avoid taking on any new EMI — it would deepen the shortfall.`;
   }
-
-  // ── Case 2: No consumer debt left ──
   if(!top){
     const ef=Math.round(exp*3);
     return `You have no high-interest consumer loans left — a strong position. With ${fmt(s)} monthly surplus, prioritise building an emergency fund of about ${fmt(ef)} (three months of expenses), then redirect surplus toward your home-loan principal or long-term investments.`;
   }
-
-  // ── Case 3: Tight surplus (positive but thin) ──
-  if(s < exp*0.25){  // surplus is less than a quarter of monthly expenses = fragile
+  if(s < exp*0.25){
     return `Your surplus of ${fmt(s)} is thin relative to your ${fmt(exp)} in living costs, leaving little buffer. Direct it at ${top.name}, your costliest debt at ${top.rate}% p.a. Clearing its ${fmt(top.outstanding)} balance would free ${fmt(top.amount)} every month — meaningfully easing this tightness. Hold off on new borrowing until then.`;
   }
-
-  // ── Case 4: Healthy surplus → avalanche guidance with timeline ──
   let msg = `With ${fmt(s)} surplus this month, the highest-impact move is clearing ${top.name} — your most expensive debt at ${top.rate}% p.a. with ${fmt(top.outstanding)} outstanding. Removing it frees ${fmt(top.amount)} monthly.`;
-  if(consumer[1]){
-    msg += ` After that, shift to ${consumer[1].name} (${consumer[1].rate}% p.a.).`;
-  }
-  if(months>0 && months<=12){
-    msg += ` At your current surplus, the smallest of these — ${small[0].name} — could be cleared in roughly ${months} month${months>1?'s':''}.`;
-  }
+  if(consumer[1]){ msg += ` After that, shift to ${consumer[1].name} (${consumer[1].rate}% p.a.).`; }
+  if(months>0 && months<=12){ msg += ` At your current surplus, the smallest of these — ${small[0].name} — could be cleared in roughly ${months} month${months>1?'s':''}.`; }
   return msg;
 }
 
@@ -734,7 +918,6 @@ function renderAll(){
   // Topbar + sidebar
   const sbv=document.getElementById('sb-val');
   sbv.textContent=fmtS(s); sbv.style.color=s>=0?'var(--green)':'var(--red)';
-  const sbsub=document.getElementById('sb-sub');if(sbsub)sbsub.textContent='of '+fmt(inc)+' income';
   document.getElementById('r-val').textContent=r+'%';
   document.getElementById('r-dot').style.background=r>80?'var(--red)':r>50?'var(--amber)':'var(--green)';
   document.getElementById('tb-debt').textContent=fmt(td);
@@ -819,9 +1002,6 @@ function renderAll(){
   // CC mini
   const ccTot=totCC(),ccLim=S.cc.reduce((s,c)=>s+c.limit,0),ccU=Math.round(ccTot/ccLim*100);
   document.getElementById('cc-util-h').textContent=`${ccU}% utilised`;
-  const ccPay=S.emis.filter(e=>e.type==='Credit Card').reduce((s,e)=>s+e.amount,0);
-  const ccp=document.getElementById('cc-monthly-pay');if(ccp)ccp.textContent=fmt(ccPay);
-  // Dynamic CC alert based on actual largest balances
   const ccAlert=document.getElementById('cc-alert-text');
   if(ccAlert){
     const activeCards=S.cc.filter(c=>c.outstanding>0).sort((a,b)=>b.outstanding-a.outstanding);
@@ -910,11 +1090,27 @@ function renderAll(){
     <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Consumer loans</div><div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:4px">${fmt(plAmt+glAmt+totCC())}</div></div>
     <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Personal dues</div><div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--amber);margin-top:4px">${fmt(totDues())}</div></div>
   `;
-  const debtRows=[
+  const debtData=[
+    ['Home Loan 1 — Bajaj (Main)',6670708,7974335,'Home Loan',8.9],
+    ['Home Loan 2 — Bajaj',437975,null,'Home Loan',9.9],
+    ['Home Loan 3 — Bajaj',558947,null,'Home Loan',9.9],
+    ['ICICI Personal Loan',1102785,1146896,'Personal Loan',18],
+    ['TVS iQube EV Bike',108623,112968,'Vehicle Loan',9],
+    ['Poonawalla Finance',331361,344615,'Personal Loan',22],
+    ['Amruta Gold Loan',415500,415500,'Gold Loan',14],
+    ['Nihar Gold Loan',752800,752800,'Gold Loan',14],
+    ['Credit Cards (total)',586944,586944,'Credit Card',36],
+    ['Jupiter Loan',150000,156000,'Personal Loan',24],
+    ['Aditya Birla Capital',249035,258996,'Personal Loan',20],
+    ["Mama's Amount",385000,385000,'Personal Due',0],
+    ['Sheetal Akka',450000,450000,'Personal Due',0],
+    ['Mummy Gold',150000,150000,'Personal Due',0],
+    ['Nithish',100000,100000,'Personal Due',0],
+  ];
+  document.getElementById('debt-rows').innerHTML=([
     ...[...S.emis].sort((a,b)=>b.outstanding-a.outstanding).map(e=>({n:e.name,out:e.outstanding,t:e.type,rl:e.rate>0?e.rate+'% p.a.':'—'})),
     ...[...S.dues].sort((a,b)=>b.amount-a.amount).map(d=>({n:d.name,out:d.amount,t:'Personal Due',rl:d.interest?'Has interest':'No interest'}))
-  ];
-  document.getElementById('debt-rows').innerHTML=debtRows.map(o=>`
+  ]).map(o=>`
     <div class="cr"><div class="cr-icon" style="background:${(typeCol[o.t]||'#8b949e')}22">${typeIcon[o.t]||'👤'}</div>
     <div class="cr-body"><div class="cr-title">${o.n}</div><div class="cr-sub">${o.t} · ${o.rl}</div></div>
     <div class="cr-right"><div class="cr-val r">${fmt(o.out)}</div></div></div>`).join('');
@@ -931,12 +1127,10 @@ function renderAll(){
         `${fmt(e.outstanding)} outstanding · frees ${fmt(e.amount)}/month once cleared`,
         urgency[0], urgency[1]]);
     });
-    // Home loans last among interest-bearing (lowest rate, tax-advantaged)
     homeLoans.forEach((e)=>{
       rows.push([String(rows.length+1), e.name, e.rate+'% p.a.',
         `${fmt(e.outstanding)} · low rate & tax-deductible — do not prioritise prepayment`, 'b', 'Keep running']);
     });
-    // No-interest personal dues — flexible, after interest debt
     if(noInterestDues.length){
       const totNI=noInterestDues.reduce((s,d)=>s+d.amount,0);
       rows.push([String(rows.length+1), 'Personal dues ('+noInterestDues.length+' people)', '0% interest',
@@ -950,19 +1144,76 @@ function renderAll(){
       <span class="badge ${c}">${tag}</span>
     </div>`).join('');
 
-  // ── TAX PAGE ──────────────────────────────────────────────────
-  const gross=1836282;
+  // ── NET WORTH ──────────────────────────────────────────────────
+  const assets=totAssets(), nw=netWorth();
+  const nwValEl=document.getElementById('nw-val');
+  if(nwValEl){
+    nwValEl.textContent=fmtS(nw); nwValEl.style.color=nw>=0?'var(--green)':'var(--red)';
+    const maxNW=Math.max(assets,td)||1;
+    document.getElementById('nw-assets').textContent=fmt(assets);
+    document.getElementById('nw-debt').textContent=fmt(td);
+    document.getElementById('nw-assets-bar').style.width=Math.round(assets/maxNW*100)+'%';
+    document.getElementById('nw-debt-bar').style.width=Math.round(td/maxNW*100)+'%';
+  }
+  if(document.getElementById('nw-page-val')){
+    const el=document.getElementById('nw-page-val'); el.textContent=fmtS(nw); el.style.color=nw>=0?'var(--green)':'var(--red)';
+    document.getElementById('nw-page-sub').textContent = nw>=0 ? 'You own more than you owe — positive net worth' : 'Your debt currently exceeds assets — focus on debt reduction to flip this positive';
+    document.getElementById('nw-page-assets').textContent=fmt(assets);
+    document.getElementById('nw-page-debt').textContent=fmt(td);
+    document.getElementById('assets-list').innerHTML=S.assets.map(a=>`
+      <div class="cr"><div class="cr-icon" style="background:var(--green-bg)">💎</div>
+      <div class="cr-body"><div class="cr-title">${a.name}</div><div class="cr-sub">${a.type}</div></div>
+      <div style="display:flex;align-items:center;gap:8px"><span class="cr-val g">${fmt(a.value)}</span><button class="btn-d" onclick="delAsset(${a.id})">×</button></div></div>`).join('')||'<div class="empty">No assets added</div>';
+  }
+
+  // ── DEBT-FREE TIMELINE ──────────────────────────────────────────
+  const dftEl=document.getElementById('dft-body');
+  if(dftEl){
+    const m=debtFreeMonths();
+    if(m===null){
+      dftEl.innerHTML=`<div style="font-size:13px;color:var(--amber);line-height:1.6">With no monthly surplus, your consumer debt can't reduce on its own. Free up surplus by closing a loan or trimming expenses to unlock a debt-free date.</div>`;
+    } else if(m===0){
+      dftEl.innerHTML=`<div style="font-size:24px;font-weight:700;color:var(--green);font-family:'DM Mono',monospace">Debt-free!</div><div style="font-size:12px;color:var(--text3);margin-top:4px">No consumer loans remaining.</div>`;
+    } else {
+      const yrs=Math.floor(m/12), mo=m%12;
+      const d=new Date(); d.setMonth(d.getMonth()+m);
+      const dateStr=d.toLocaleDateString('en-IN',{month:'short',year:'numeric'});
+      dftEl.innerHTML=`
+        <div style="font-size:28px;font-weight:700;font-family:'DM Mono',monospace;color:var(--blue)">${yrs>0?yrs+'y ':''}${mo}m</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px">to clear all consumer debt</div>
+        <div style="margin-top:12px;padding:8px 12px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--text2)">
+          At your current surplus of <strong style="color:var(--green)">${fmt(surp())}/month</strong> applied to highest-rate loans first, you'd be free of all non-home debt by <strong style="color:var(--blue)">${dateStr}</strong>.
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text4)">Excludes home loan (long-term, low-rate). Assumes surplus stays constant.</div>`;
+    }
+  }
+
+  // ── GOALS ──────────────────────────────────────────────────
+  const gm=document.getElementById('goals-mini');
+  if(gm) gm.innerHTML=S.goals.length?S.goals.map(g=>{
+      const pct=g.target>0?Math.min(100,Math.round(g.saved/g.target*100)):0; const done=pct>=100;
+      return `<div class="prog" style="margin-bottom:14px"><div class="prog-top"><span>${done?'✅ ':''}${g.name}</span><span style="font-family:'DM Mono',monospace">${fmt(g.saved)} / ${fmt(g.target)}</span></div><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${done?'var(--green)':'var(--purple)'}"></div></div><div style="font-size:10px;color:var(--text4);margin-top:3px">${pct}% complete${done?' — goal reached!':' · '+fmt(g.target-g.saved)+' to go'}</div></div>`;
+    }).join(''):'<div class="empty">No goals yet — add some in the Goals tab</div>';
+  const gf=document.getElementById('goals-full');
+  if(gf) gf.innerHTML=S.goals.length?S.goals.map(g=>{
+      const pct=g.target>0?Math.min(100,Math.round(g.saved/g.target*100)):0; const done=pct>=100;
+      return `<div style="padding:14px 18px;border-bottom:1px solid var(--border2)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div><div style="font-size:13px;font-weight:500;color:var(--text)">${done?'✅ ':''}${g.name}</div><div style="font-size:10px;color:var(--text4);margin-top:1px">${pct}% complete · ${fmt(g.target-g.saved)} to go</div></div><button class="btn-d" onclick="delGoal(${g.id})">×</button></div><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${done?'var(--green)':'var(--purple)'}"></div></div><div style="display:flex;gap:8px;margin-top:10px;align-items:center"><input type="number" id="goal-add-${g.id}" placeholder="Add amount" style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;padding:7px 10px;outline:none"><button onclick="addToGoal(${g.id})" style="background:var(--purple);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;padding:7px 14px;cursor:pointer">Add</button></div></div>`;
+    }).join(''):'<div class="empty">No goals yet</div>';
+
+  // ── TAX PAGE (editable calculator, values from S.tax) ──────────────
+  const T=S.tax;
+  const gross=T.gross;
   const regime=(typeof P!=='undefined'&&P.regime)?P.regime:'Old Regime';
   const isNew=regime==='New Regime';
   // New regime allows only Standard Deduction + Employer NPS 80CCD(2); all other deductions are Old-regime only
   const std=isNew?75000:50000;
-  const hra=isNew?0:285003;
-  const hl=isNew?0:200000;
-  const c80=isNew?0:150000;
-  const nps1=isNew?0:50000;
-  const nps2=106400;
-  const d80=isNew?0:50000;
-  const ttta=isNew?0:10000;
+  const hra=isNew?0:T.hra;
+  const hl=isNew?0:T.homeLoanInt;
+  const c80=isNew?0:T.c80;
+  const nps1=isNew?0:T.nps1b;
+  const nps2=T.npsEmp;
+  const d80=isNew?0:T.d80;
+  const ttta=isNew?0:T.tta;
   const totD=std+hra+hl+c80+nps1+nps2+d80+ttta;
   const taxable=Math.max(0,gross-totD);
   // Slab tax: nw=true uses New Regime FY 2025-26 slabs (latest enacted), else Old Regime
@@ -978,8 +1229,8 @@ function renderAll(){
   };
   const tax=slabTax(taxable,isNew),cess=tax*.04,totalTax=Math.round(tax+cess),mTDS=Math.round(totalTax/12);
   // Compare both regimes for the subtitle so it always shows which one is cheaper
-  const oldTax=Math.round(slabTax(Math.max(0,gross-(50000+285003+200000+150000+50000+106400+50000+10000)),false)*1.04);
-  const newTax=Math.round(slabTax(Math.max(0,gross-(75000+106400)),true)*1.04);
+  const oldTax=Math.round(slabTax(Math.max(0,gross-(50000+T.hra+T.homeLoanInt+T.c80+T.nps1b+T.npsEmp+T.d80+T.tta)),false)*1.04);
+  const newTax=Math.round(slabTax(Math.max(0,gross-(75000+T.npsEmp)),true)*1.04);
   const cheaper=oldTax<=newTax?'Old Regime':'New Regime',diff=Math.abs(oldTax-newTax);
   const _ts=document.getElementById('tax-sub');if(_ts)_ts.textContent=`${regime} · ADF Foods Mumbai · ${cheaper} saves ${fmt(diff)}/yr`;
   const _tb=document.getElementById('tax-ded-badge');if(_tb)_tb.textContent=isNew?'New regime':'Old regime';
@@ -1007,16 +1258,23 @@ function renderAll(){
     <div class="tax-row hl"><span style="font-size:12px;font-weight:700">Total annual tax</span><span style="font-family:'DM Mono',monospace;font-weight:700;color:var(--red);font-size:15px">${fmt(totalTax)}</span></div>
     <div class="tax-row hl"><span style="font-size:12px;font-weight:700">Monthly TDS at ADF</span><span style="font-family:'DM Mono',monospace;font-weight:700;color:var(--amber);font-size:14px">${fmt(mTDS)}/mo</span></div>
   `;
-  document.getElementById('tax-chk').innerHTML=[
-    ['Day 1 at ADF','Declare Old Regime + submit investment declaration to HR','r'],
-    ['Day 1 at ADF','Request employer NPS 80CCD(2) — saves Rs.33,000/year','r'],
-    ['Day 1 at ADF','Inform ADF HR about Deloitte income Rs.4,36,311','r'],
-    ['Week 1','Find Mumbai flat — Rs.38-40K rent, get landlord PAN','a'],
-    ['Month 1','Buy personal health insurance (self + spouse) — 80D','a'],
-    ['Month 1','Buy term life insurance Rs.1.5-2Cr — spouse not earning','r'],
-    ['Before Jul 31, 2026','File FY 2025-26 ITR with CA — hard deadline','r'],
-    ['Apr 2027','Collect Form 16 from both Deloitte + ADF, file ITR-2','b'],
-  ].map(([w,t,c])=>`<div class="cr"><div class="cr-icon" style="background:var(--${c==='r'?'red':c==='a'?'amber':'blue'}-bg)">✓</div><div class="cr-body"><div class="cr-title">${t}</div></div><span class="badge ${c}">${w}</span></div>`).join('');
+  const chkEl=document.getElementById('tax-chk');
+  if(chkEl){
+    const done=S.checklist.filter(i=>i.done).length;
+    chkEl.innerHTML=S.checklist.length? S.checklist.map(i=>`
+      <div class="cr" style="${i.done?'opacity:.55':''}">
+        <div onclick="toggleChk(${i.id})" style="width:22px;height:22px;border-radius:6px;border:2px solid var(--${i.pri==='r'?'red':i.pri==='a'?'amber':'blue'});display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;background:${i.done?'var(--green)':'transparent'};border-color:${i.done?'var(--green)':''}">${i.done?'<span style="color:#fff;font-size:13px">✓</span>':''}</div>
+        <div class="cr-body"><div class="cr-title" style="${i.done?'text-decoration:line-through':''}">${i.text}</div></div>
+        <span class="badge ${i.pri}">${i.tag}</span>
+        <button class="btn-d" onclick="delChk(${i.id})">×</button>
+      </div>`).join('') : '<div class="empty">No items — add one below</div>';
+    const cp=document.getElementById('chk-progress');if(cp)cp.textContent=done+' of '+S.checklist.length+' done';
+  }
+
+  fillTaxInputs();
+
+  // Persist everything after each render
+  saveData();
 }
 
 // CRUD
@@ -1048,9 +1306,7 @@ function addLoan(){
   const emi=calcEMI(a,r,t),tp=emi*t,ti=tp-a;
   const cr=document.getElementById('calc-res');cr.style.display='block';
   cr.innerHTML=`EMI: <strong>${fmt(emi)}/month</strong> · Total interest: ${fmt(ti)} · Total payable: ${fmt(tp)}`;
-  const purpose=document.getElementById('ln-p').value;
-  const ptype={Business:'Business Loan',Personal:'Personal Loan',Medical:'Personal Loan',Education:'Personal Loan',Other:'Other'}[purpose]||'Business Loan';
-  S.emis.push({id:nid++,name:n,amount:Math.round(emi),due:5,type:ptype,outstanding:a,rate:r});
+  S.emis.push({id:nid++,name:n,amount:Math.round(emi),due:5,type:'Business Loan',outstanding:a,rate:r});
   document.getElementById('ln-n').value='';document.getElementById('ln-a').value='';document.getElementById('ln-r').value='';document.getElementById('ln-t').value='';renderAll();
 }
 function addCC(){
@@ -1066,8 +1322,122 @@ function addDue(){
   document.getElementById('du-n').value='';document.getElementById('du-a').value='';renderAll();
 }
 
+function addAsset(){
+  const n=document.getElementById('as-n').value.trim(),v=parseFloat(document.getElementById('as-v').value);
+  if(!n||!v||v<=0){alert('Enter asset name and value');return;}
+  S.assets.push({id:nid++,name:n,value:v,type:document.getElementById('as-t').value});
+  document.getElementById('as-n').value='';document.getElementById('as-v').value='';renderAll();
+}
+function delAsset(id){S.assets=S.assets.filter(a=>a.id!==id);renderAll();}
+function addGoal(){
+  const n=document.getElementById('go-n').value.trim(),t=parseFloat(document.getElementById('go-t').value),s=parseFloat(document.getElementById('go-s').value)||0;
+  if(!n||!t||t<=0){alert('Enter goal name and target');return;}
+  S.goals.push({id:nid++,name:n,target:t,saved:s});
+  document.getElementById('go-n').value='';document.getElementById('go-t').value='';document.getElementById('go-s').value='';renderAll();
+}
+function delGoal(id){S.goals=S.goals.filter(g=>g.id!==id);renderAll();}
+function addToGoal(id){
+  const inp=document.getElementById('goal-add-'+id);const amt=parseFloat(inp.value);
+  if(!amt||amt<=0){alert('Enter an amount to add');return;}
+  const g=S.goals.find(x=>x.id===id);if(g){g.saved+=amt;}renderAll();
+}
+
+function toggleChk(id){const i=S.checklist.find(x=>x.id===id);if(i){i.done=!i.done;}renderAll();}
+function delChk(id){S.checklist=S.checklist.filter(x=>x.id!==id);renderAll();}
+function addChk(){
+  const t=document.getElementById('chk-text').value.trim();
+  const tag=document.getElementById('chk-tag').value.trim()||'To do';
+  const pri=document.getElementById('chk-pri').value;
+  if(!t){alert('Enter a task');return;}
+  S.checklist.push({id:nid++,text:t,tag:tag,pri:pri,done:false});
+  document.getElementById('chk-text').value='';document.getElementById('chk-tag').value='';
+  renderAll();
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify({S:S,P:P,nid:nid},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='finance-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function importData(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const d=JSON.parse(e.target.result);
+      if(d.S){ S=d.S; }
+      if(d.P){ P=Object.assign({},P_DEFAULT,d.P); }
+      if(d.nid){ nid=d.nid; }
+      ['incomes','emis','expenses','cc','dues','assets','goals'].forEach(k=>{ if(!S[k])S[k]=JSON.parse(JSON.stringify(DEFAULT_S[k]||[])); });
+      if(!S.tax)S.tax=JSON.parse(JSON.stringify(DEFAULT_S.tax));
+      if(!S.checklist)S.checklist=JSON.parse(JSON.stringify(DEFAULT_S.checklist));
+      renderAll();
+      alert('Backup restored successfully!');
+    }catch(err){ alert('Could not read that file — make sure it is a backup exported from this app.'); }
+  };
+  reader.readAsText(file);
+}
+
+function runWhatIf(){
+  const el=document.getElementById('whatif-amt');
+  const out=document.getElementById('whatif-result');
+  let pool=parseFloat(el.value)||0;
+  if(pool<=0){ out.innerHTML='<div style="font-size:12px;color:var(--text3)">Enter an amount above to simulate.</div>'; return; }
+  // Avalanche: pay off highest-interest consumer loans first with the lump sum
+  const loans=[...S.emis].filter(e=>e.type!=='Home Loan').sort((a,b)=>b.rate-a.rate);
+  let freed=0, cleared=[], partial=null, remaining=pool;
+  for(const l of loans){
+    if(remaining<=0) break;
+    if(remaining>=l.outstanding){
+      remaining-=l.outstanding; freed+=l.amount; cleared.push(l);
+    } else {
+      partial={loan:l, pays:remaining}; remaining=0;
+    }
+  }
+  const newSurplus=surp()+freed;
+  let html='';
+  if(cleared.length){
+    html+=`<div style="font-size:12px;color:var(--text);font-weight:600;margin-bottom:8px">With ${fmt(pool)} you could fully clear ${cleared.length} loan${cleared.length>1?'s':''}:</div>`;
+    html+=cleared.map(l=>`<div class="cr"><div class="cr-icon" style="background:var(--green-bg)">✓</div><div class="cr-body"><div class="cr-title">${l.name}</div><div class="cr-sub">${l.rate}% p.a. · was ${fmt(l.amount)}/mo</div></div><span class="cr-val g">−${fmt(l.outstanding)}</span></div>`).join('');
+  }
+  if(partial){
+    html+=`<div class="cr"><div class="cr-icon" style="background:var(--amber-bg)">~</div><div class="cr-body"><div class="cr-title">${partial.loan.name} (partial)</div><div class="cr-sub">${partial.loan.rate}% p.a. · pay down ${fmt(partial.pays)} of ${fmt(partial.loan.outstanding)}</div></div><span class="cr-val a">−${fmt(partial.pays)}</span></div>`;
+  }
+  if(!cleared.length && !partial){
+    html+='<div style="font-size:12px;color:var(--text3)">Amount is smaller than your smallest consumer loan — apply it to your highest-interest debt as a part-payment.</div>';
+  } else {
+    html+=`<div style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:8px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--text2)">Monthly EMI freed</span><span class="cr-val g">+${fmt(freed)}/mo</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--text2)">New monthly surplus</span><span class="cr-val ${newSurplus>=0?'g':'r'}">${fmtS(newSurplus)}</span></div>
+      ${remaining>0?`<div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text2)">Lump sum left over</span><span class="cr-val b">${fmt(remaining)}</span></div>`:''}
+    </div>`;
+  }
+  out.innerHTML=html;
+}
+
+function updateTax(){
+  const g=v=>{const el=document.getElementById(v);return el?parseFloat(el.value)||0:0;};
+  S.tax.gross=g('t-gross');S.tax.hra=g('t-hra');S.tax.homeLoanInt=g('t-hl');
+  S.tax.c80=g('t-c80');S.tax.nps1b=g('t-nps1');S.tax.npsEmp=g('t-nps2');
+  S.tax.d80=g('t-d80');S.tax.tta=g('t-tta');
+  renderAll();
+}
+function resetTax(){
+  S.tax=JSON.parse(JSON.stringify(DEFAULT_S.tax));
+  fillTaxInputs();
+  renderAll();
+}
+function fillTaxInputs(){
+  const set=(id,val)=>{const el=document.getElementById(id);if(el&&document.activeElement!==el)el.value=val;};
+  set('t-gross',S.tax.gross);set('t-hra',S.tax.hra);set('t-hl',S.tax.homeLoanInt);
+  set('t-c80',S.tax.c80);set('t-nps1',S.tax.nps1b);set('t-nps2',S.tax.npsEmp);
+  set('t-d80',S.tax.d80);set('t-tta',S.tax.tta);
+}
+
 // Navigation
-const titles={dashboard:'Dashboard',income:'Income',emis:'EMIs',expenses:'Expenses',cc:'Credit Cards',loans:'Add Loan',dues:'Personal Dues',debt:'Total Debt',tax:'Tax Plan',profile:'My Profile'};
+const titles={dashboard:'Dashboard',income:'Income',emis:'EMIs',expenses:'Expenses',cc:'Credit Cards',loans:'Add Loan',dues:'Personal Dues',debt:'Total Debt',tax:'Tax Plan',profile:'My Profile',networth:'Net Worth',goals:'Goals'};
 function sw(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
@@ -1075,26 +1445,14 @@ function sw(id,btn){
   btn.classList.add('active');
   document.getElementById('pg-ttl').textContent=titles[id]||id;
   renderAll();
-  // Auto-close sidebar on mobile after selecting a page
-  if(window.innerWidth <= 768){
+  if(window.innerWidth<=768){
     document.querySelector('.sidebar').classList.add('collapsed');
     document.getElementById('sb-overlay').classList.remove('show');
   }
 }
 
 
-// Profile state
-let P = {
-  name: 'Sughosh Anney',
-  initials: 'SA',
-  company: 'ADF Foods',
-  city: 'Mumbai',
-  desig: 'Assistant Manager - FP&A',
-  fy: 'FY 2026-27',
-  pan: 'CQDPA9373B',
-  regime: 'Old Regime',
-  color: '135deg,#238636,#1f6feb'
-};
+// Profile state is loaded via loadData() into P (declared above)
 
 function previewProfile(){
   const n=document.getElementById('prof-name').value||'User';
@@ -1150,29 +1508,24 @@ function updateProfileUI(){
   }
 }
 
-
 // Sidebar toggle (hamburger)
-let sidebarOpen = true;
 function toggleSidebar(){
-  const sb = document.querySelector('.sidebar');
-  const ov = document.getElementById('sb-overlay');
-  const isMobile = window.innerWidth <= 768;
-  sidebarOpen = sb.classList.contains('collapsed'); // if collapsed, we're about to open
+  const sb=document.querySelector('.sidebar');
+  const ov=document.getElementById('sb-overlay');
+  const isMobile=window.innerWidth<=768;
   sb.classList.toggle('collapsed');
-  // On mobile, show overlay when sidebar is open
   if(isMobile){
     if(sb.classList.contains('collapsed')) ov.classList.remove('show');
     else ov.classList.add('show');
   }
 }
-// On mobile, start with sidebar collapsed
 function initSidebar(){
-  const sb = document.querySelector('.sidebar');
-  if(window.innerWidth <= 768){ sb.classList.add('collapsed'); }
+  const sb=document.querySelector('.sidebar');
+  if(window.innerWidth<=768){ sb.classList.add('collapsed'); }
   else { sb.classList.remove('collapsed'); }
 }
-window.addEventListener('resize', function(){
-  const sb=document.querySelector('.sidebar');const ov=document.getElementById('sb-overlay');
+window.addEventListener('resize',function(){
+  const ov=document.getElementById('sb-overlay');
   if(window.innerWidth>768){ov.classList.remove('show');}
 });
 
