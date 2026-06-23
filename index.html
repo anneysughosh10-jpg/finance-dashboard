@@ -703,6 +703,7 @@ function renderAll(){
   // Topbar + sidebar
   const sbv=document.getElementById('sb-val');
   sbv.textContent=fmtS(s); sbv.style.color=s>=0?'var(--green)':'var(--red)';
+  const sbsub=document.getElementById('sb-sub');if(sbsub)sbsub.textContent='of '+fmt(inc)+' income';
   document.getElementById('r-val').textContent=r+'%';
   document.getElementById('r-dot').style.background=r>80?'var(--red)':r>50?'var(--amber)':'var(--green)';
   document.getElementById('tb-debt').textContent=fmt(td);
@@ -998,7 +999,9 @@ function addLoan(){
   const emi=calcEMI(a,r,t),tp=emi*t,ti=tp-a;
   const cr=document.getElementById('calc-res');cr.style.display='block';
   cr.innerHTML=`EMI: <strong>${fmt(emi)}/month</strong> · Total interest: ${fmt(ti)} · Total payable: ${fmt(tp)}`;
-  S.emis.push({id:nid++,name:n,amount:Math.round(emi),due:5,type:'Business Loan',outstanding:a,rate:r});
+  const purpose=document.getElementById('ln-p').value;
+  const ptype={Business:'Business Loan',Personal:'Personal Loan',Medical:'Personal Loan',Education:'Personal Loan',Other:'Other'}[purpose]||'Business Loan';
+  S.emis.push({id:nid++,name:n,amount:Math.round(emi),due:5,type:ptype,outstanding:a,rate:r});
   document.getElementById('ln-n').value='';document.getElementById('ln-a').value='';document.getElementById('ln-r').value='';document.getElementById('ln-t').value='';renderAll();
 }
 function addCC(){
