@@ -44,7 +44,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;transition:margin-left .25s ease,transform .25s ease}
 .sidebar.collapsed{margin-left:-240px}
 .content{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:50}
 .main{flex:1;overflow-y:auto;padding:24px}
 /* ── SIDEBAR ─────────────────────────────────────────────────────────────── */
 .sb-brand{padding:20px 16px 14px;border-bottom:1px solid var(--border)}
@@ -195,7 +195,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
   /* every multi-column grid collapses to one column */
   .hero,.dash-grid,.dash-grid-2,.fg,.fg3,.profile-grid,.debt-cats-grid{grid-template-columns:1fr !important}
   /* topbar wraps cleanly */
-  .topbar{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px}
+  .topbar{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px;position:sticky;top:0;z-index:50}
   .tb-right{flex-wrap:wrap;gap:6px}
   .tb-pill{font-size:10px;padding:4px 9px}
   .theme-btn{font-size:10px;padding:4px 9px}
@@ -1100,7 +1100,7 @@ function renderAll(){
   document.getElementById('loan-full').innerHTML=S.emis.map(l=>`
     <div class="cr"><div class="cr-icon" style="background:${typeCol[l.type]||'#8b949e'}22">${typeIcon[l.type]||'📋'}</div>
     <div class="cr-body"><div class="cr-title">${l.name}</div><div class="cr-sub">${l.type} · ${l.rate}% p.a.</div></div>
-    <div class="cr-right"><div style="font-size:10px;color:var(--text3)">Outstanding</div><div class="cr-val">${fmt(l.outstanding)}</div><div class="cr-val r" style="font-size:11px">${fmt(l.amount)}/mo</div></div></div>`).join('')||'<div class="empty">No loans</div>';
+    <div class="cr-right" style="display:flex;align-items:center;gap:8px"><div><div style="font-size:10px;color:var(--text3)">Outstanding</div><div class="cr-val">${fmt(l.outstanding)}</div><div class="cr-val r" style="font-size:11px">${fmt(l.amount)}/mo</div></div><button class="btn-d" onclick="del('emis',${l.id})">×</button></div></div>`).join('')||'<div class="empty">No loans</div>';
 
   // ── DUES FULL PAGE ──────────────────────────────────────────────────
   document.getElementById('dues-full').innerHTML=[...S.dues].sort((a,b)=>b.amount-a.amount).map(d=>`
