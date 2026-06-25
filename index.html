@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,17 +20,16 @@
   --card-shadow:0 1px 3px rgba(0,0,0,.4);
 }
 [data-theme="light"]{
-  /* Warm cream palette — easy on the eyes, not stark white */
-  --bg:#f4efe6; --bg2:#fdfaf3; --bg3:#f0e9da; --bg4:#e8dfcc; --bg5:#d8cdb5;
-  --text:#3a3327; --text2:#6b6253; --text3:#9c917e; --text4:#b3a892;
-  --border:#e2d8c4; --border2:#ede5d5;
-  --green:#2f7d32; --green-bg:rgba(47,125,50,.1); --green-b:rgba(47,125,50,.28);
-  --red:#c0392b; --red-bg:rgba(192,57,43,.1); --red-b:rgba(192,57,43,.28);
-  --amber:#9a6700; --amber-bg:rgba(154,103,0,.1); --amber-b:rgba(154,103,0,.28);
-  --blue:#1565c0; --blue-bg:rgba(21,101,192,.1); --blue-b:rgba(21,101,192,.28);
-  --purple:#7e4cc4; --purple-bg:rgba(126,76,196,.1); --purple-b:rgba(126,76,196,.28);
-  --accent:#2f7d32; --accent2:#1565c0;
-  --card-shadow:0 1px 3px rgba(120,100,60,.1);
+  --bg:#f0f2f5; --bg2:#ffffff; --bg3:#f6f8fa; --bg4:#eaeef2; --bg5:#d0d7de;
+  --text:#1f2328; --text2:#636c76; --text3:#9aa3ad; --text4:#adb5bd;
+  --border:#d0d7de; --border2:#eaeef2;
+  --green:#1a7f37; --green-bg:rgba(26,127,55,.1); --green-b:rgba(26,127,55,.3);
+  --red:#cf222e; --red-bg:rgba(207,34,46,.1); --red-b:rgba(207,34,46,.3);
+  --amber:#9a6700; --amber-bg:rgba(154,103,0,.1); --amber-b:rgba(154,103,0,.3);
+  --blue:#0969da; --blue-bg:rgba(9,105,218,.1); --blue-b:rgba(9,105,218,.3);
+  --purple:#8250df; --purple-bg:rgba(130,80,223,.1); --purple-b:rgba(130,80,223,.3);
+  --accent:#1a7f37; --accent2:#0969da;
+  --card-shadow:0 1px 3px rgba(0,0,0,.08);
 }
 /* ── RESET ─────────────────────────────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -44,7 +43,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;transition:margin-left .25s ease,transform .25s ease}
 .sidebar.collapsed{margin-left:-240px}
 .content{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:50}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .main{flex:1;overflow-y:auto;padding:24px}
 /* ── SIDEBAR ─────────────────────────────────────────────────────────────── */
 .sb-brand{padding:20px 16px 14px;border-bottom:1px solid var(--border)}
@@ -144,8 +143,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .prog-track{background:var(--bg4);border-radius:4px;height:6px;overflow:hidden}
 .prog-fill{height:6px;border-radius:4px;transition:width .6s}
 /* ── SUGGEST BOX ─────────────────────────────────────────────────────────── */
-.suggest{background:var(--green-bg);border:1px solid var(--green-b);border-radius:10px;padding:14px 16px;margin-bottom:20px}
-.sug-body{color:var(--text2)}
+.suggest{background:linear-gradient(135deg,#1a2a1a,#1a1f2e);border:1px solid var(--green-b);border-radius:10px;padding:14px 16px;margin-bottom:20px}
 .sug-icon{font-size:16px;margin-bottom:6px}
 .sug-title{font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
 .sug-body{font-size:12px;color:var(--text2);line-height:1.6}
@@ -184,58 +182,30 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
 @media(max-width:768px){
   .app{flex-direction:row;height:100vh;overflow:hidden}
-  /* sidebar scrolls as ONE piece so the surplus box at the bottom is always reachable */
-  .sidebar{position:fixed;top:0;left:0;height:100vh;width:84vw;max-width:300px;z-index:999;box-shadow:4px 0 24px rgba(0,0,0,.3);overflow-y:auto;-webkit-overflow-scrolling:touch}
-  .sidebar.collapsed{margin-left:-84vw}
-  .sb-nav{display:block;padding:10px 8px;flex:0 0 auto}
-  .sb-surplus{flex:0 0 auto;margin-bottom:24px}
-  .ni{width:100%;padding:10px 12px;font-size:13px}
-  .content{height:100vh;overflow:hidden;flex:1;min-width:0}
-  .main{overflow-y:auto;overflow-x:hidden;padding:14px}
-  /* every multi-column grid collapses to one column */
-  .hero,.dash-grid,.dash-grid-2,.fg,.fg3,.profile-grid,.debt-cats-grid{grid-template-columns:1fr !important}
-  /* topbar wraps cleanly */
-  .topbar{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px;position:sticky;top:0;z-index:50}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:260px;z-index:999;box-shadow:4px 0 24px rgba(0,0,0,.3)}
+  .sidebar.collapsed{margin-left:-260px}
+  .sb-nav{display:block;padding:10px 8px}
+  .ni{width:100%;padding:9px 10px}
+  .content{height:100vh;overflow:hidden;flex:1}
+  .main{overflow-y:auto;padding:14px}
+  .hero,.dash-grid,.dash-grid-2,.fg,.fg3,.profile-grid{grid-template-columns:1fr !important}
+  .debt-cats-grid{grid-template-columns:1fr 1fr !important}
+  .topbar{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px}
   .tb-right{flex-wrap:wrap;gap:6px}
   .tb-pill{font-size:10px;padding:4px 9px}
   .theme-btn{font-size:10px;padding:4px 9px}
-  /* big numbers must shrink + wrap so they never overflow */
-  .hero-amount{font-size:24px;word-break:break-all}
-  [style*="font-size:34px"]{font-size:22px !important;word-break:break-all}
-  [style*="font-size:32px"]{font-size:22px !important;word-break:break-all}
-  [style*="font-size:28px"]{font-size:20px !important;word-break:break-all}
-  /* card rows: allow wrap, keep value from clipping */
-  .cr{padding:9px 12px;gap:8px;flex-wrap:wrap}
-  .cr-body{min-width:0;flex:1 1 60%}
-  .cr-title{white-space:normal;word-break:break-word}
-  .cr-val{font-size:12px;white-space:nowrap}
+  .hero-amount{font-size:26px}
+  .cr{padding:9px 12px}
+  .cr-title{white-space:normal}
   .tax-row{padding:8px 12px;flex-wrap:wrap;gap:4px}
   .card-header{padding:12px 14px 8px;flex-wrap:wrap;gap:6px}
   .pg-title{font-size:17px}
-  .pg-header{flex-wrap:wrap;gap:8px}
-  body,html{overflow-x:hidden;max-width:100vw}
-  .card,.fc{overflow:hidden;max-width:100%}
-  /* Profile: stack avatar above name, center it, give breathing room */
-  .profile-avatar-row{flex-direction:column;text-align:center;gap:10px}
-  .profile-avatar-row > div:last-child{width:100%}
-  #profile-name-preview{font-size:18px}
-  /* Profile form fields: full width, comfortable spacing */
-  .fc .fg,.fc .fg3{gap:12px}
-  .fgrp input,.fgrp select{padding:11px 12px;font-size:14px}
-  .fgrp label{font-size:11px}
-  .nw-subgrid{gap:8px}
-  .nw-subgrid [style*="font-size:18px"]{font-size:15px !important;word-break:break-all}
-  /* the big net-worth / debt hero numbers */
-  .debt-hero{padding:16px}
-  .debt-hero [style*="font-size:34px"]{font-size:21px !important}
-  /* asset/debt value cells inside grids */
-  .debt-cats-grid > div [style*="font-size:18px"],.debt-cats-grid > div [style*="font-size:16px"]{font-size:15px !important;word-break:break-all}
+  body{overflow-x:hidden}
+  .card,.fc{overflow:hidden}
 }
 @media(max-width:420px){
-  .hero-amount{font-size:21px}
-  .ni{font-size:12px}
-  .tb-pill{font-size:9px;padding:3px 7px}
-  [style*="font-size:34px"]{font-size:19px !important}
+  .debt-cats-grid{grid-template-columns:1fr !important}
+  .hero-amount{font-size:24px}
 }
 </style>
 </head>
@@ -294,6 +264,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile
     </button>
   </nav>
+  <div class="sb-surplus">
+    <div class="ss-label">Monthly surplus</div>
+    <div class="ss-val" id="sb-val" style="color:var(--green)">...</div>
+    <div class="ss-sub" id="sb-sub">of Rs.2,10,110 income</div>
+  </div>
 </aside>
 
 <!-- ── CONTENT ──────────────────────────────────────────────────────── -->
@@ -548,7 +523,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <div style="font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.07em">Grand total outstanding</div>
       <div style="font-size:34px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:6px" id="grand-total">—</div>
       <div style="font-size:11px;color:var(--text3);margin-top:4px">Closing cost with penalties: <strong style="color:var(--text2)">Rs.1,28,34,055</strong></div>
-      <div class="debt-cats-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px" id="debt-cats"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px" id="debt-cats"></div>
     </div>
     <div class="card" style="margin-bottom:16px">
       <div class="card-header"><span class="card-title">Complete debt breakdown</span></div>
@@ -623,7 +598,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
       <div style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.07em">Current net worth</div>
       <div style="font-size:34px;font-weight:700;font-family:'DM Mono',monospace;margin-top:6px" id="nw-page-val">—</div>
       <div style="font-size:11px;color:var(--text3);margin-top:4px" id="nw-page-sub">—</div>
-      <div class="nw-subgrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
         <div style="background:var(--bg3);border:1px solid var(--green-b);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Total assets</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green);margin-top:4px" id="nw-page-assets">—</div></div>
         <div style="background:var(--bg3);border:1px solid var(--red-b);border-radius:8px;padding:10px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Total debt</div><div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);margin-top:4px" id="nw-page-debt">—</div></div>
       </div>
@@ -660,10 +635,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
   <!-- ── PROFILE PAGE ─────────────────────────────────────────── -->
   <div id="pg-profile" class="page">
     <div class="pg-header"><div><div class="pg-title">My Profile</div><div class="pg-sub">Your details — updates reflect everywhere in the app</div></div></div>
-    <div class="profile-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div>
         <div class="fc">
-          <div class="profile-avatar-row" style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
             <div id="profile-avatar-preview" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#238636,#1f6feb);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">SA</div>
             <div>
               <div id="profile-name-preview" style="font-size:16px;font-weight:700;color:var(--text)">Sughosh Anney</div>
@@ -942,7 +917,7 @@ function renderAll(){
 
   // Topbar + sidebar
   const sbv=document.getElementById('sb-val');
-  if(sbv){ sbv.textContent=fmtS(s); sbv.style.color=s>=0?'var(--green)':'var(--red)'; }
+  sbv.textContent=fmtS(s); sbv.style.color=s>=0?'var(--green)':'var(--red)';
   document.getElementById('r-val').textContent=r+'%';
   document.getElementById('r-dot').style.background=r>80?'var(--red)':r>50?'var(--amber)':'var(--green)';
   document.getElementById('tb-debt').textContent=fmt(td);
@@ -1100,7 +1075,7 @@ function renderAll(){
   document.getElementById('loan-full').innerHTML=S.emis.map(l=>`
     <div class="cr"><div class="cr-icon" style="background:${typeCol[l.type]||'#8b949e'}22">${typeIcon[l.type]||'📋'}</div>
     <div class="cr-body"><div class="cr-title">${l.name}</div><div class="cr-sub">${l.type} · ${l.rate}% p.a.</div></div>
-    <div class="cr-right" style="display:flex;align-items:center;gap:8px"><div><div style="font-size:10px;color:var(--text3)">Outstanding</div><div class="cr-val">${fmt(l.outstanding)}</div><div class="cr-val r" style="font-size:11px">${fmt(l.amount)}/mo</div></div><button class="btn-d" onclick="del('emis',${l.id})">×</button></div></div>`).join('')||'<div class="empty">No loans</div>';
+    <div class="cr-right"><div style="font-size:10px;color:var(--text3)">Outstanding</div><div class="cr-val">${fmt(l.outstanding)}</div><div class="cr-val r" style="font-size:11px">${fmt(l.amount)}/mo</div></div></div>`).join('')||'<div class="empty">No loans</div>';
 
   // ── DUES FULL PAGE ──────────────────────────────────────────────────
   document.getElementById('dues-full').innerHTML=[...S.dues].sort((a,b)=>b.amount-a.amount).map(d=>`
@@ -1555,26 +1530,18 @@ window.addEventListener('resize',function(){
 });
 
 // Theme toggle
-function applyThemeLabels(){
-  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  // Button shows the theme you'll switch TO
-  const tb=document.getElementById('theme-btn');if(tb)tb.textContent=isDark?'☀️ Light':'🌙 Dark';
-  const ptb=document.getElementById('profile-theme-btn');if(ptb)ptb.textContent=isDark?'☀️ Light mode':'🌙 Dark mode';
-}
 function toggleTheme(){
   const html=document.documentElement;
   const isDark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',isDark?'light':'dark');
-  applyThemeLabels();
+  document.getElementById('theme-btn').textContent=isDark?'🌙 Dark':'☀️ Light';
+  const ptb=document.getElementById('profile-theme-btn');if(ptb)ptb.textContent=isDark?'🌙 Dark mode':'☀️ Light mode';
 }
-// Always start in LIGHT on every refresh (per preference)
-document.documentElement.setAttribute('data-theme','light');
 
 // Init date
 document.getElementById('tb-date') && (document.getElementById('tb-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'}));
 renderAll();
 initSidebar();
-applyThemeLabels();
 </script>
 </body>
 </html>
